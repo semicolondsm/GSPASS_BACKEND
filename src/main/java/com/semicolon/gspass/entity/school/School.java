@@ -1,9 +1,13 @@
 package com.semicolon.gspass.entity.school;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.semicolon.gspass.entity.user.User;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.HashSet;
+import java.util.Set;
 
 @Builder
 @Getter
@@ -35,8 +39,8 @@ public class School {
     @NonNull
     private int timeLength;
 
-    public int getId() {
-        return this.id;
-    }
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<User> students = new HashSet<>();
 
 }
