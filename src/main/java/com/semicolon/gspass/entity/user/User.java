@@ -1,13 +1,12 @@
 package com.semicolon.gspass.entity.user;
 
+import com.semicolon.gspass.entity.school.School;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Builder
 @Getter
@@ -31,5 +30,9 @@ public class User {
 
     @Column(length = 4)
     private String entryYear;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id")
+    private School school;
 
 }
