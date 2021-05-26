@@ -24,6 +24,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     compile 'mysql:mysql-connector-java'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.3.5.RELEASE'
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.8'
