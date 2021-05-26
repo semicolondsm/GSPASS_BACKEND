@@ -4,15 +4,18 @@ import com.semicolon.gspass.dto.user.RegisterRequest;
 import com.semicolon.gspass.dto.user.TokenResponse;
 import com.semicolon.gspass.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/overlap")
+    public boolean checkName(@RequestParam("name") String name) {
+        return userService.nameIsExist(name);
+    }
 
     @PostMapping("/register")
     public TokenResponse register(@RequestBody RegisterRequest request) {
