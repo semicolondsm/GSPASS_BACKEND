@@ -35,4 +35,8 @@ public class School {
     @NonNull
     private int timeLength;
 
+    public int getId() {
+        return this.id;
+    }
+
 }
