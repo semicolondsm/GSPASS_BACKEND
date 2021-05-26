@@ -47,4 +47,4 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64
         push: true
-        tags: gs_backend:latest
+        tags: leeseojune/gs_backend:latest
