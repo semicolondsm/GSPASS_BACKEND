@@ -9,7 +9,7 @@ import java.sql.Time;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "school")
 public class School {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
