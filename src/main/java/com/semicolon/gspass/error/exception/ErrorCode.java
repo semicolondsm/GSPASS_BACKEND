@@ -9,6 +9,8 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
 
+    USER_NOT_FOUND(404, "User Not Found."),
+
     SCHOOL_NOT_FOUND(404, "School Not Found."),
     PARSE_ERROR(400, "Parse Error.");
 
