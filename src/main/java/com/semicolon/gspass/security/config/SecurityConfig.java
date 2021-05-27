@@ -25,7 +25,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/overlap").permitAll()
-                .antMatchers(HttpMethod.GET, "/meals").permitAll();
+                .antMatchers(HttpMethod.GET, "/meals").permitAll()
+                .antMatchers(HttpMethod.GET, "/schools").permitAll();
     }
 
     @Bean
