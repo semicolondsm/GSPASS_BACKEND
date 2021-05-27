@@ -17,7 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,32 +54,18 @@ public class SchoolServiceImpl implements SchoolService {
 
         for(int i=0, length = nList.getLength(); i < length; i++){
             Node node = nList.item(i);
-            if(node.getNodeType() == Node.ELEMENT_NODE) {
-                Element element = (Element) node;
 
-                List<String> menu = new ArrayList<>();
-                String[] menus = deleteBracketTextByPattern(getTagValue("DDISH_NM", element)).split(MENU_PATTERN);
-
-                for(String value : menus){
-                    if(value.length() != 0) {
-                        menu.add(value);
-                    }
-                }
-
-                switch (getTagValue("MMEAL_SC_NM", element)){
-                    case "조식":
-                        response.setBreakfast(menu);
-                        break;
-                    case "중식":
-                        response.setLunch(menu);
-                        break;
-                    case "석식":
-                        response.setDinner(menu);
-                        break;
-                    default:
-                        break;
-                }
+            if(node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
             }
+
+            Element element = (Element) node;
+
+            List<String> menu =
+                    Arrays.asList(deleteBracketTextByPattern(getTagValue("DDISH_NM", element))
+                            .split(MENU_PATTERN));
+
+            setMealResponse(response, element, menu);
         }
 
         return response;
@@ -111,6 +97,22 @@ public class SchoolServiceImpl implements SchoolService {
         }
 
         return pureText;
+    }
+
+    private void setMealResponse(MealResponse response, Element element, List<String> menu) {
+        switch (getTagValue("MMEAL_SC_NM", element)){
+            case "조식":
+                response.setBreakfast(menu);
+                break;
+            case "중식":
+                response.setLunch(menu);
+                break;
+            case "석식":
+                response.setDinner(menu);
+                break;
+            default:
+                break;
+        }
     }
 
 }
