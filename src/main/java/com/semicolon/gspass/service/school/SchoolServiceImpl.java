@@ -80,7 +80,7 @@ public class SchoolServiceImpl implements SchoolService {
         return nValue.getNodeValue();
     }
 
-    private static String deleteBracketTextByPattern(String text) {
+    private String deleteBracketTextByPattern(String text) {
 
         Matcher matcher = PATTERN_BRACKET.matcher(text);
 
