@@ -38,8 +38,8 @@ public class SchoolServiceImpl implements SchoolService {
         Document doc;
 
         try{
-            DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(MEAL_BASEURL + "?ATPT_OFCDC_SC_CODE=" + school.getScCode() + "&SD_SCHUL_CODE=" + school.getSchoolCode() + "&MLSV_YMD=" + date);
         }catch(ParserConfigurationException | SAXException | IOException e){
             throw new ParseErrorException();
