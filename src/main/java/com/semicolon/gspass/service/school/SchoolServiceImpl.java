@@ -1,6 +1,7 @@
 package com.semicolon.gspass.service.school;
 
 import com.semicolon.gspass.dto.school.MealResponse;
+import com.semicolon.gspass.dto.school.SchoolResponse;
 import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.school.SchoolRepository;
 import com.semicolon.gspass.exception.ParseErrorException;
@@ -17,6 +18,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 public class SchoolServiceImpl implements SchoolService {
 
     private static final String MEAL_BASEURL = "https://open.neis.go.kr/hub/mealServiceDietInfo";
+    private static final String SCHOOL_BASEURL = "https://open.neis.go.kr/hub/schoolInfo";
     private static final Pattern PATTERN_BRACKET = Pattern.compile("\\([^\\(\\)]+\\)");
     private static final String MENU_PATTERN = "[^\\uAC00-\\uD7AF\\u1100-\\u11FF\\u3130-\\u318F\n]";
 
@@ -79,6 +82,37 @@ public class SchoolServiceImpl implements SchoolService {
                     default:
                         break;
                 }
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<SchoolResponse> getSchools(String name) {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        Document doc;
+        try{
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            name = URLEncoder.encode(name, "UTF-8");
+            doc = dBuilder.parse(SCHOOL_BASEURL + "?SCHUL_NM=" + name);
+        }catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new ParseErrorException();
+        }
+
+
+        doc.getDocumentElement().normalize();
+
+        NodeList nList = doc.getElementsByTagName("row");
+
+        List<SchoolResponse> response = new ArrayList<>();
+
+        for(int i=0, length = nList.getLength(); i < length; i++){
+            Node node = nList.item(i);
+            if(node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) node;
+                response.add(new SchoolResponse(getTagValue("ATPT_OFCDC_SC_CODE", element), getTagValue("SD_SCHUL_CODE", element),
+                        getTagValue("LCTN_SC_NM", element), getTagValue("SCHUL_NM", element)));
             }
         }
 
