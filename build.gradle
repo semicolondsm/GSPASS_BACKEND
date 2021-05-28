@@ -1,7 +1,12 @@
+buildscript {
+    ext.spockVersion = "1.3-groovy-2.5"
+}
+
 plugins {
     id 'org.springframework.boot' version '2.4.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'groovy'
 }
 
 group = 'com.semicolon'
@@ -13,6 +18,8 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+
+
 
 repositories {
     mavenCentral()
@@ -32,10 +39,10 @@ dependencies {
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.8'
 
-    testImplementation 'com.h2database:h2'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
+    testRuntimeOnly("org.codehaus.groovy:groovy")
+    testImplementation("org.spockframework:spock-core:$spockVersion")
+    testImplementation("org.spockframework:spock-spring:$spockVersion")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
 }
 
 test {
