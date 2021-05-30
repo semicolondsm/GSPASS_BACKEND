@@ -1,6 +1,6 @@
 package com.semicolon.gspass.security.jwt;
 
-import com.semicolon.gspass.security.jwt.auth.AuthDetailsService;
+import com.semicolon.gspass.security.auth.AuthDetailsService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -53,6 +52,10 @@ public class JwtTokenProvider {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration * 1000))
                 .compact();
+    }
+
+    public boolean isRefreshToken(String token) {
+        return Jwts.parser().setSigningKey(getSigningKey()).parseClaimsJws(token).getBody().get("type").equals("refresh");
     }
 
     private String getSigningKey() {
