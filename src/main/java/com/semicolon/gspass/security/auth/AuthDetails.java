@@ -1,4 +1,4 @@
-package com.semicolon.gspass.security.jwt.auth;
+package com.semicolon.gspass.security.auth;
 
 import com.semicolon.gspass.entity.user.User;
 import lombok.AllArgsConstructor;

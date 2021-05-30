@@ -1,9 +1,8 @@
-package com.semicolon.gspass.security.jwt.auth;
+package com.semicolon.gspass.security.auth;
 
 import com.semicolon.gspass.entity.user.UserRepository;
 import com.semicolon.gspass.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
