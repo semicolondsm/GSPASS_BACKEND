@@ -14,7 +14,6 @@ import com.semicolon.gspass.facade.school.SchoolFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SchoolFacade schoolFacade;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -39,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse register(RegisterRequest request) {
-        if(userRepository.findById(request.getId()).isPresent()) throw new UserAlreadyExistException();
+        if(userRepository.existsById(request.getId())) throw new UserAlreadyExistException();
         userRepository.save(
                 User.builder()
                 .id(request.getId())

@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @Column(length = 45)
+    @Column(length = 45, unique = true)
     private String id;
 
     @Column(length = 45)
