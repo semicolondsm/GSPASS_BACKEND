@@ -28,7 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .sessionManagement().disable()
                 .csrf().disable();
         http.authorizeRequests()
+                .antMatchers("/swagger-ui.html/**", "/swagger-resources/**", "/v3/**", "/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/refresh").permitAll()
                 .antMatchers(HttpMethod.GET, "/overlap").permitAll()
                 .antMatchers(HttpMethod.GET, "/meals").permitAll()
                 .antMatchers(HttpMethod.GET, "/schools").permitAll()
