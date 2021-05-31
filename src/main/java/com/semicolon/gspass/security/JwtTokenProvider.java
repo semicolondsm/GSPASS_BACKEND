@@ -38,8 +38,8 @@ public class JwtTokenProvider {
     private Long refreshTokenExpiration;
 
 
-    private AuthDetailsService authDetailsService;
-    private TeacherDetailsService teacherDetailsService;
+    private final AuthDetailsService authDetailsService;
+    private final TeacherDetailsService teacherDetailsService;
 
     public String generateAccessToken(String id, String role) {
         return Jwts.builder()
