@@ -32,9 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/refresh").permitAll()
+                .antMatchers(HttpMethod.POST, "/school").permitAll()
                 .antMatchers(HttpMethod.GET, "/overlap").permitAll()
                 .antMatchers(HttpMethod.GET, "/meals").permitAll()
-                .antMatchers(HttpMethod.GET, "/schools").permitAll()
+                .antMatchers(HttpMethod.GET, "/school").permitAll()
                 .anyRequest().authenticated()
                 .and().apply(new JwtConfigure(jwtTokenProvider));
     }
