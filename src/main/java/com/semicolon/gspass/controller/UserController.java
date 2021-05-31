@@ -1,6 +1,6 @@
 package com.semicolon.gspass.controller;
 
-import com.semicolon.gspass.dto.user.LoginRequest;
+import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.user.RegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.service.user.UserService;
