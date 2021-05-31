@@ -7,13 +7,14 @@ import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.user.User;
 import com.semicolon.gspass.entity.user.UserRepository;
+import com.semicolon.gspass.exception.AlreadyUserExistException;
+import com.semicolon.gspass.exception.InvalidTokenException;
 import com.semicolon.gspass.exception.UserNotFoundException;
 import com.semicolon.gspass.facade.school.SchoolFacade;
-import com.semicolon.gspass.security.jwt.JwtTokenProvider;
+import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse register(RegisterRequest request) {
+        if(userRepository.findById(request.getId()).isPresent()) throw new AlreadyUserExistException();
         userRepository.save(
                 User.builder()
                 .id(request.getId())
@@ -58,6 +60,17 @@ public class UserServiceImpl implements UserService {
                 .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPassword()))
                 .orElseThrow(UserNotFoundException::new);
         return generateToken(request.getId());
+    }
+
+    @Override
+    public TokenResponse tokenRefresh(String token) {
+        if(!jwtTokenProvider.isRefreshToken(token)) throw new InvalidTokenException();
+
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
+                .map(rToken -> rToken.update(refreshTokenExpiration))
+                .orElseThrow(InvalidTokenException::new);
+
+        return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId()), refreshToken.getRefreshToken());
     }
 
     private TokenResponse generateToken(String name) {

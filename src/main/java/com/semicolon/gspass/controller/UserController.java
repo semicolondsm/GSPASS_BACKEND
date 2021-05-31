@@ -28,4 +28,9 @@ public class UserController {
         return userService.login(request);
     }
 
+    @PostMapping("/refresh")
+    public TokenResponse tokenRefresh(@RequestHeader(name = "X-Refresh-Token") String token) {
+        return userService.tokenRefresh(token);
+    }
+
 }

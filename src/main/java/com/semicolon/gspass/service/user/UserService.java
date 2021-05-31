@@ -8,4 +8,5 @@ public interface UserService {
     boolean nameIsExist(String name);
     TokenResponse register(RegisterRequest request);
     TokenResponse login(LoginRequest request);
+    TokenResponse tokenRefresh(String token);
 }
