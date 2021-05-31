@@ -8,6 +8,7 @@ import com.semicolon.gspass.entity.school.SchoolRepository;
 import com.semicolon.gspass.exception.ParseErrorException;
 import com.semicolon.gspass.exception.SchoolAlreadyExistException;
 import com.semicolon.gspass.exception.SchoolNotFoundException;
+import com.semicolon.gspass.facade.auth.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -16,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,10 +39,11 @@ public class SchoolServiceImpl implements SchoolService {
     private static final String MENU_PATTERN = "[^\\uAC00-\\uD7AF\\u1100-\\u11FF\\u3130-\\u318F\n]";
 
     private final SchoolRepository schoolRepository;
+    private final AuthenticationFacade authenticationFacade;
 
     @Override
-    public MealResponse getMeals(int schoolId, String date) {
-        School school = schoolRepository.findById(schoolId).orElseThrow(SchoolNotFoundException::new);
+    public MealResponse getMeals(String date) {
+        School school = schoolRepository.findById(authenticationFacade.getSchoolId()).orElseThrow(SchoolNotFoundException::new);
         Document doc;
 
         try{
