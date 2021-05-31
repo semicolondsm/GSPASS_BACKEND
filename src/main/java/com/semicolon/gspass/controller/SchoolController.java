@@ -22,17 +22,19 @@ public class SchoolController {
     private final SchoolService schoolService;
 
     @GetMapping("/meals")
-    @Operation(summary = "급식 가져오기", security = @SecurityRequirement(name = "Authorization"))
+    @Operation(summary = "급식", security = @SecurityRequirement(name = "Authorization"))
     public MealResponse getMeals(@RequestParam("date") String date) {
         return schoolService.getMeals(date);
     }
 
     @GetMapping("/school")
+    @Operation(summary = "학교 정보")
     public List<SchoolResponse> getSchools(@RequestParam("name") String name) {
         return schoolService.getSchools(name);
     }
 
     @PostMapping("/school")
+    @Operation(summary = "학교 등록")
     public String registerSchool(@RequestBody RegisterRequest request) {
         return schoolService.registerSchool(request);
     }
