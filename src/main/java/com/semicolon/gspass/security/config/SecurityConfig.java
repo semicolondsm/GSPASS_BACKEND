@@ -30,11 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http.authorizeRequests()
                 .antMatchers("/swagger-ui.html/**", "/swagger-resources/**", "/v3/**", "/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/teacher/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/teacher/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/refresh").permitAll()
+                .antMatchers(HttpMethod.POST, "/school").permitAll()
                 .antMatchers(HttpMethod.GET, "/overlap").permitAll()
-                .antMatchers(HttpMethod.GET, "/meals").permitAll()
-                .antMatchers(HttpMethod.GET, "/schools").permitAll()
+                .antMatchers(HttpMethod.GET, "/school").permitAll()
                 .anyRequest().authenticated()
                 .and().apply(new JwtConfigure(jwtTokenProvider));
     }
@@ -46,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
 
     @Bean
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManagerBean();
     }
 

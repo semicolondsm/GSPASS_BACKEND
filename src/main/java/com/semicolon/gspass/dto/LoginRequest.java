@@ -1,4 +1,4 @@
-package com.semicolon.gspass.dto.user;
+package com.semicolon.gspass.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
+public class LoginRequest {
 
-    private String accessToken;
-    private String refreshToken;
+    private String id;
+    private String password;
 
 }

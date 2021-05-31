@@ -1,6 +1,7 @@
 package com.semicolon.gspass.entity.school;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.semicolon.gspass.entity.teacher.Teacher;
 import com.semicolon.gspass.entity.user.User;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"schoolCode","scCode"}))
 @Entity(name = "school")
 public class School {
 
@@ -36,11 +38,14 @@ public class School {
 
     private Time dinnerPeriod;
 
-    @NonNull
     private int timeLength;
 
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<User> students = new HashSet<>();
+
+    @OneToOne(mappedBy = "school", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Teacher teacher;
 
 }

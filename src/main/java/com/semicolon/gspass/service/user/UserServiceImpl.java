@@ -1,20 +1,19 @@
 package com.semicolon.gspass.service.user;
 
-import com.semicolon.gspass.dto.user.LoginRequest;
+import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.user.RegisterRequest;
-import com.semicolon.gspass.dto.user.TokenResponse;
+import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.user.User;
 import com.semicolon.gspass.entity.user.UserRepository;
-import com.semicolon.gspass.exception.AlreadyUserExistException;
+import com.semicolon.gspass.exception.UserAlreadyExistException;
 import com.semicolon.gspass.exception.InvalidTokenException;
 import com.semicolon.gspass.exception.UserNotFoundException;
 import com.semicolon.gspass.facade.school.SchoolFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SchoolFacade schoolFacade;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -39,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse register(RegisterRequest request) {
-        if(userRepository.findById(request.getId()).isPresent()) throw new AlreadyUserExistException();
+        if(userRepository.existsById(request.getId())) throw new UserAlreadyExistException();
         userRepository.save(
                 User.builder()
                 .id(request.getId())
@@ -70,12 +68,12 @@ public class UserServiceImpl implements UserService {
                 .map(rToken -> rToken.update(refreshTokenExpiration))
                 .orElseThrow(InvalidTokenException::new);
 
-        return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId()), refreshToken.getRefreshToken());
+        return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId(), "user"), refreshToken.getRefreshToken());
     }
 
     private TokenResponse generateToken(String name) {
-        String accessToken = jwtTokenProvider.generateAccessToken(name);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(name);
+        String accessToken = jwtTokenProvider.generateAccessToken(name, "user");
+        String refreshToken = jwtTokenProvider.generateRefreshToken(name, "user");
         refreshTokenRepository.save(
                 RefreshToken.builder()
                         .id(name)

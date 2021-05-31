@@ -1,4 +1,4 @@
-package com.semicolon.gspass.entity.user;
+package com.semicolon.gspass.entity.teacher;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.semicolon.gspass.entity.school.School;
@@ -9,30 +9,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Builder
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "user")
-public class User {
+@Entity
+public class Teacher {
 
-    @Id
-    @Column(length = 45, unique = true)
+    @Id @Column(unique = true)
     private String id;
-
-    @Column(length = 45)
-    private String name;
 
     @Column(length = 255)
     private String password;
 
-    @Column(length = 5)
-    private String gcn;
-
-    @Column(length = 4)
-    private String entryYear;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     @JsonBackReference
     private School school;
