@@ -1,5 +1,6 @@
 package com.semicolon.gspass.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.semicolon.gspass.entity.school.School;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
+    @JsonBackReference
     private School school;
 
 }
