@@ -7,7 +7,7 @@ import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.user.User;
 import com.semicolon.gspass.entity.user.UserRepository;
-import com.semicolon.gspass.exception.AlreadyUserExistException;
+import com.semicolon.gspass.exception.UserAlreadyExistException;
 import com.semicolon.gspass.exception.InvalidTokenException;
 import com.semicolon.gspass.exception.UserNotFoundException;
 import com.semicolon.gspass.facade.school.SchoolFacade;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse register(RegisterRequest request) {
-        if(userRepository.findById(request.getId()).isPresent()) throw new AlreadyUserExistException();
+        if(userRepository.findById(request.getId()).isPresent()) throw new UserAlreadyExistException();
         userRepository.save(
                 User.builder()
                 .id(request.getId())
