@@ -23,7 +23,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             String token = jwtTokenProvider.resolveToken(request);
             if(token != null && jwtTokenProvider.validateToken(token)){
-                Authentication authentication = jwtTokenProvider.authentication(token);
+                Authentication authentication;
+                if(jwtTokenProvider.isTeacherToken(token)){
+                    authentication = jwtTokenProvider.teacherAuthentication(token);
+                }else authentication = jwtTokenProvider.authentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (InvalidTokenException e) {

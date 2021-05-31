@@ -1,6 +1,7 @@
 package com.semicolon.gspass.entity.school;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.semicolon.gspass.entity.teacher.Teacher;
 import com.semicolon.gspass.entity.user.User;
 import lombok.*;
 
@@ -42,5 +43,9 @@ public class School {
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<User> students = new HashSet<>();
+
+    @OneToOne(mappedBy = "school", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Teacher teacher;
 
 }

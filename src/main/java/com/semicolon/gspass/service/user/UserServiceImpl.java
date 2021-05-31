@@ -2,7 +2,7 @@ package com.semicolon.gspass.service.user;
 
 import com.semicolon.gspass.dto.user.LoginRequest;
 import com.semicolon.gspass.dto.user.RegisterRequest;
-import com.semicolon.gspass.dto.user.TokenResponse;
+import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.user.User;
@@ -70,12 +70,12 @@ public class UserServiceImpl implements UserService {
                 .map(rToken -> rToken.update(refreshTokenExpiration))
                 .orElseThrow(InvalidTokenException::new);
 
-        return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId()), refreshToken.getRefreshToken());
+        return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId(), "user"), refreshToken.getRefreshToken());
     }
 
     private TokenResponse generateToken(String name) {
-        String accessToken = jwtTokenProvider.generateAccessToken(name);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(name);
+        String accessToken = jwtTokenProvider.generateAccessToken(name, "user");
+        String refreshToken = jwtTokenProvider.generateRefreshToken(name, "user");
         refreshTokenRepository.save(
                 RefreshToken.builder()
                         .id(name)

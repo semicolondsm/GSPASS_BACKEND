@@ -12,6 +12,9 @@ public enum ErrorCode {
     USER_ALREADY_EXIST(400, "User Already Exist."),
     USER_NOT_FOUND(404, "User Not Found."),
 
+    TEACHER_ALREADY_EXIST(400, "Teacher Already Exist."),
+    TEACHER_NOT_FOUND(404, "Teacher Not Found."),
+
     INVALID_TOKEN(401, "Invalid Token."),
 
     SCHOOL_NOT_FOUND(404, "School Not Found."),
