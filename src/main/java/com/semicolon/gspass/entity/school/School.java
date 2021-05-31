@@ -13,6 +13,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"schoolCode","scCode"}))
 @Entity(name = "school")
 public class School {
 
@@ -36,7 +37,6 @@ public class School {
 
     private Time dinnerPeriod;
 
-    @NonNull
     private int timeLength;
 
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
