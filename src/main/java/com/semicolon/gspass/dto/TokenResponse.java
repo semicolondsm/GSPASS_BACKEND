@@ -1,4 +1,4 @@
-package com.semicolon.gspass.dto.user;
+package com.semicolon.gspass.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
