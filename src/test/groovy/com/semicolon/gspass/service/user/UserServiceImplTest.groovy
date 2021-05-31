@@ -5,7 +5,7 @@ import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
 import com.semicolon.gspass.entity.user.UserRepository
-import com.semicolon.gspass.exception.AlreadyUserExistException
+import com.semicolon.gspass.exception.UserAlreadyExistException
 import com.semicolon.gspass.facade.school.SchoolFacade
 import com.semicolon.gspass.security.JwtTokenProvider
 import org.springframework.security.authentication.AuthenticationManager
@@ -43,7 +43,7 @@ class UserServiceImplTest extends Specification {
         then:
         userRepository.findById(id) >> Optional.empty()
 
-        notThrown AlreadyUserExistException
+        notThrown UserAlreadyExistException
 
         where:
         id     | name  | password  | gcn    | entryYear | randomCode

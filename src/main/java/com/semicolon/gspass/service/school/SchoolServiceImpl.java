@@ -1,10 +1,12 @@
 package com.semicolon.gspass.service.school;
 
 import com.semicolon.gspass.dto.school.MealResponse;
+import com.semicolon.gspass.dto.school.RegisterRequest;
 import com.semicolon.gspass.dto.school.SchoolResponse;
 import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.school.SchoolRepository;
 import com.semicolon.gspass.exception.ParseErrorException;
+import com.semicolon.gspass.exception.SchoolAlreadyExistException;
 import com.semicolon.gspass.exception.SchoolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,6 +120,33 @@ public class SchoolServiceImpl implements SchoolService {
         }
 
         return response;
+    }
+
+    @Override
+    public String registerSchool(RegisterRequest request) {
+        String randomCode = randomCode();
+        try{
+            schoolRepository.save(
+                    School.builder()
+                            .schoolCode(request.getSchoolCode())
+                            .scCode(request.getScCode())
+                            .randomCode(randomCode)
+                            .build()
+            );
+        }catch(Exception e) {
+            throw new SchoolAlreadyExistException();
+        }
+
+        return randomCode;
+    }
+
+    private String randomCode() {
+        StringBuilder result = new StringBuilder();
+        String[] codes = "QWERTYUIOPASDFGHJKLZXCVBNM0123456789".split("");
+        for (int i = 0; i < 6; i++) {
+            result.append(codes[new Random().nextInt(codes.length)]);
+        }
+        return result.toString();
     }
 
     private String getTagValue(String tag, Element element) {
