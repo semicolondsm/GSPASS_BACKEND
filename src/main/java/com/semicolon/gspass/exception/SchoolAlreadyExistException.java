@@ -3,8 +3,10 @@ package com.semicolon.gspass.exception;
 import com.semicolon.gspass.error.exception.ErrorCode;
 import com.semicolon.gspass.error.exception.GsException;
 
-public class UserAlreadyExistException extends GsException {
-    public UserAlreadyExistException() {
-        super(ErrorCode.USER_ALREADY_EXIST);
+public class SchoolAlreadyExistException extends GsException {
+
+    public SchoolAlreadyExistException() {
+        super(ErrorCode.SCHOOL_ALREADY_EXIST);
     }
+
 }
