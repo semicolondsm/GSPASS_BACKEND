@@ -1,5 +1,6 @@
 package com.semicolon.gspass.service.teacher;
 
+import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
@@ -9,6 +10,7 @@ import com.semicolon.gspass.entity.teacher.Teacher;
 import com.semicolon.gspass.entity.teacher.TeacherRepository;
 import com.semicolon.gspass.exception.SchoolNotFoundException;
 import com.semicolon.gspass.exception.TeacherAlreadyExistException;
+import com.semicolon.gspass.exception.TeacherNotFoundException;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,8 +32,10 @@ public class TeacherServiceImpl implements TeacherService{
 
     @Override
     public TokenResponse registerTeacher(RegisterRequest request) {
-        if(schoolRepository.findByRandomCode(request.getRandomCode()).isPresent() ||
-                teacherRepository.existsById(request.getId())) throw new TeacherAlreadyExistException();
+        if(teacherRepository.existsById(request.getId()) ||
+                schoolRepository.findByRandomCode(request.getRandomCode())
+                        .orElseThrow(SchoolNotFoundException::new).getTeacher() != null
+        ) throw new TeacherAlreadyExistException();
 
         schoolRepository.findByRandomCode(request.getRandomCode())
                 .map(school -> teacherRepository.save(
@@ -42,6 +46,14 @@ public class TeacherServiceImpl implements TeacherService{
                         .build()
                 )).orElseThrow(SchoolNotFoundException::new);
 
+        return generateToken(request.getId());
+    }
+
+    @Override
+    public TokenResponse login(LoginRequest request) {
+        teacherRepository.findById(request.getId())
+                .filter(teacher -> passwordEncoder.matches(request.getPassword(), teacher.getPassword()))
+                .orElseThrow(TeacherNotFoundException::new);
         return generateToken(request.getId());
     }
 
