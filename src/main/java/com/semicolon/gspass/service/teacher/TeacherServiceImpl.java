@@ -1,6 +1,7 @@
 package com.semicolon.gspass.service.teacher;
 
 import com.semicolon.gspass.dto.LoginRequest;
+import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
@@ -8,14 +9,18 @@ import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.school.SchoolRepository;
 import com.semicolon.gspass.entity.teacher.Teacher;
 import com.semicolon.gspass.entity.teacher.TeacherRepository;
+import com.semicolon.gspass.exception.InvalidPasswordException;
 import com.semicolon.gspass.exception.SchoolNotFoundException;
 import com.semicolon.gspass.exception.TeacherAlreadyExistException;
 import com.semicolon.gspass.exception.TeacherNotFoundException;
+import com.semicolon.gspass.facade.auth.AuthenticationFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class TeacherServiceImpl implements TeacherService{
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationFacade authenticationFacade;
 
     @Value("${jwt.exp.refresh}")
     private Long refreshTokenExpiration;
@@ -51,10 +57,30 @@ public class TeacherServiceImpl implements TeacherService{
 
     @Override
     public TokenResponse login(LoginRequest request) {
-        teacherRepository.findById(request.getId())
-                .filter(teacher -> passwordEncoder.matches(request.getPassword(), teacher.getPassword()))
+        Teacher teacher = teacherRepository.findById(request.getId())
                 .orElseThrow(TeacherNotFoundException::new);
+
+        if(!passwordEncoder.matches(request.getPassword(), teacher.getPassword()))
+            throw new InvalidPasswordException();
+
         return generateToken(request.getId());
+    }
+
+    @Override
+    public void changePassword(PasswordRequest request) {
+        String teacherId = authenticationFacade.getTeacherId();
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(TeacherNotFoundException::new);
+
+        if(!passwordEncoder.matches(request.getOldPassword(), teacher.getPassword()))
+            throw new InvalidPasswordException();
+
+        teacherRepository.save(
+                Teacher.builder()
+                .id(teacherId)
+                .password(passwordEncoder.encode(request.getNewPassword()))
+                .build()
+        );
     }
 
     private TokenResponse generateToken(String name) {
