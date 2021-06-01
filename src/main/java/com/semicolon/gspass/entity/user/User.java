@@ -37,4 +37,9 @@ public class User {
     @JsonBackReference
     private School school;
 
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
 }
