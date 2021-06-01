@@ -41,4 +41,12 @@ public class AuthenticationFacade {
         }
     }
 
+    public String getTeacherId() {
+        try{
+            return this.getAuthentication().getName();
+        } catch (Exception e) {
+            throw new TeacherNotFoundException();
+        }
+    }
+
 }
