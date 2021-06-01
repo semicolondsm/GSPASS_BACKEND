@@ -6,6 +6,7 @@ import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
 import com.semicolon.gspass.entity.user.UserRepository
 import com.semicolon.gspass.exception.UserAlreadyExistException
+import com.semicolon.gspass.facade.auth.AuthenticationFacade
 import com.semicolon.gspass.facade.school.SchoolFacade
 import com.semicolon.gspass.security.JwtTokenProvider
 import org.springframework.security.authentication.AuthenticationManager
@@ -23,11 +24,11 @@ class UserServiceImplTest extends Specification {
         def userRepository = Mock(UserRepository)
         def refreshTokenRepository = Mock(RefreshTokenRepository)
         def schoolFacade = Mock(SchoolFacade)
+        def authenticationFacade = Mock(AuthenticationFacade)
         def passwordEncoder = Mock(PasswordEncoder)
-        def authenticationManager = Mock(AuthenticationManager)
         JwtTokenProvider jwtTokenProvider = Mock(JwtTokenProvider)
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                , authenticationManager, jwtTokenProvider, refreshTokenRepository)
+                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
 
         when:
         schoolRepository.save(
