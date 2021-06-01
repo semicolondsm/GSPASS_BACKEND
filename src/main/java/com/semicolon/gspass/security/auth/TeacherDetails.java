@@ -21,12 +21,12 @@ public class TeacherDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return teacher.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return teacher.getId();
     }
 
     @Override
