@@ -76,10 +76,7 @@ public class TeacherServiceImpl implements TeacherService{
             throw new InvalidPasswordException();
 
         teacherRepository.save(
-                Teacher.builder()
-                .id(teacherId)
-                .password(passwordEncoder.encode(request.getNewPassword()))
-                .build()
+                teacher.setPassword(passwordEncoder.encode(request.getNewPassword()))
         );
     }
 
