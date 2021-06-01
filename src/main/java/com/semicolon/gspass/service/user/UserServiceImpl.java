@@ -1,15 +1,18 @@
 package com.semicolon.gspass.service.user;
 
 import com.semicolon.gspass.dto.LoginRequest;
+import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.user.RegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.user.User;
 import com.semicolon.gspass.entity.user.UserRepository;
+import com.semicolon.gspass.exception.InvalidPasswordException;
 import com.semicolon.gspass.exception.UserAlreadyExistException;
 import com.semicolon.gspass.exception.InvalidTokenException;
 import com.semicolon.gspass.exception.UserNotFoundException;
+import com.semicolon.gspass.facade.auth.AuthenticationFacade;
 import com.semicolon.gspass.facade.school.SchoolFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +27,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SchoolFacade schoolFacade;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationFacade authenticationFacade;
 
     @Value("${jwt.exp.refresh}")
     private Long refreshTokenExpiration;
@@ -54,9 +58,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse login(LoginRequest request) {
-        userRepository.findById(request.getId())
-                .filter(user -> passwordEncoder.matches(request.getPassword(), user.getPassword()))
+        User user = userRepository.findById(request.getId())
                 .orElseThrow(UserNotFoundException::new);
+
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+            throw new InvalidPasswordException();
+
         return generateToken(request.getId());
     }
 
@@ -69,6 +76,20 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(InvalidTokenException::new);
 
         return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId(), "user"), refreshToken.getRefreshToken());
+    }
+
+    @Override
+    public void changePassword(PasswordRequest request) {
+        String userId = authenticationFacade.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+            throw new InvalidPasswordException();
+
+        userRepository.save(
+                user.setPassword(passwordEncoder.encode(request.getNewPassword()))
+        );
+
     }
 
     private TokenResponse generateToken(String name) {
