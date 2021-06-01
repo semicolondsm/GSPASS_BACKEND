@@ -27,4 +27,9 @@ public class Teacher {
     @JsonBackReference
     private School school;
 
+    public Teacher setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
 }
