@@ -39,6 +39,7 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.5.8'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testRuntimeOnly('org.junit.vintage:junit-vintage-engine')
     testRuntimeOnly("org.codehaus.groovy:groovy")
     testImplementation("org.spockframework:spock-core:$spockVersion")
     testImplementation("org.spockframework:spock-spring:$spockVersion")
