@@ -17,7 +17,7 @@ class SchoolServiceImplTest extends Specification {
         SchoolService schoolService = new SchoolServiceImpl(schoolRepository, authenticationFacade)
 
         when:
-        schoolService.getMeals("20210602")
+        schoolService.getMeals(0)
 
         then:
         schoolRepository.findById(1) >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null))
