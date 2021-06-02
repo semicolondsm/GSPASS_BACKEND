@@ -7,7 +7,7 @@ import com.semicolon.gspass.dto.school.SchoolResponse;
 import java.util.List;
 
 public interface SchoolService {
-    MealResponse getMeals(String date);
+    MealResponse getMeals(int day);
     List<SchoolResponse> getSchools(String name);
     String registerSchool(SchoolRegisterRequest request);
 }
