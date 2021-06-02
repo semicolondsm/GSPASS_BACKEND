@@ -1,13 +1,17 @@
 package com.semicolon.gspass.service.user
 
 import com.semicolon.gspass.dto.LoginRequest
+import com.semicolon.gspass.dto.PasswordRequest
 import com.semicolon.gspass.dto.user.UserRegisterRequest
+import com.semicolon.gspass.entity.refreshtoken.RefreshToken
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
+import com.semicolon.gspass.entity.teacher.Teacher
 import com.semicolon.gspass.entity.user.User
 import com.semicolon.gspass.entity.user.UserRepository
 import com.semicolon.gspass.error.exception.GsException
+import com.semicolon.gspass.exception.InvalidTokenException
 import com.semicolon.gspass.exception.UserAlreadyExistException
 import com.semicolon.gspass.facade.auth.AuthenticationFacade
 import com.semicolon.gspass.facade.school.SchoolFacade
@@ -24,8 +28,6 @@ class UserServiceImplTest extends Specification {
     def authenticationFacade = Mock(AuthenticationFacade)
     def passwordEncoder = new BCryptPasswordEncoder()
     JwtTokenProvider jwtTokenProvider = Mock(JwtTokenProvider)
-
-
 
     def "이름이 이미 있을때 true가 반환된다."() {
         given:
@@ -102,11 +104,40 @@ class UserServiceImplTest extends Specification {
         where:
         id | password
         "test" | "1111111"
-
-
     }
 
-    def "TokenRefresh"() {
+    def "토큰 재발급"() {
+        given:
+        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+        when:
+        jwtTokenProvider.isRefreshToken(token) >> true
+        refreshTokenRepository.findByRefreshToken(token) >> Optional.of(new RefreshToken("test", token, 100))
+        userService.tokenRefresh(token)
+
+        then:
+        notThrown InvalidTokenException
+
+        where:
+        token << ["refreshToken", "refreshToken1"]
+    }
+
+    def "비밀번호 변경"() {
+        given:
+        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+
+        when:
+        userService.changePassword(new PasswordRequest(oldPass, newPass))
+
+        then:
+        authenticationFacade.getUserId() >> 1.toString()
+        userRepository.findById("1") >> Optional.of(new User("test", null, passwordEncoder.encode(oldPass), null, null, null))
+
+        where:
+        oldPass | newPass
+        "1234" | "12345"
+        "test" | "test1"
     }
 
 }
