@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -41,14 +42,18 @@ public class SchoolServiceImpl implements SchoolService {
     private final AuthenticationFacade authenticationFacade;
 
     @Override
-    public MealResponse getMeals(String date) {
+    public MealResponse getMeals(int day) {
+        LocalDate date = LocalDate.now().plusDays(day);
         School school = schoolRepository.findById(authenticationFacade.getSchoolId()).orElseThrow(SchoolNotFoundException::new);
         Document doc;
+
+        System.out.println(date.toString().replace("-", ""));
 
         try{
             DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
-            doc = dBuilder.parse(MEAL_BASEURL + "?ATPT_OFCDC_SC_CODE=" + school.getScCode() + "&SD_SCHUL_CODE=" + school.getSchoolCode() + "&MLSV_YMD=" + date);
+            doc = dBuilder.parse(MEAL_BASEURL + "?ATPT_OFCDC_SC_CODE=" + school.getScCode() + "&SD_SCHUL_CODE=" + school.getSchoolCode()
+                    + "&MLSV_YMD=" + date.toString().replace("-", ""));
         }catch(ParserConfigurationException | SAXException | IOException e){
             throw new ParseErrorException();
         }
