@@ -2,7 +2,7 @@ package com.semicolon.gspass.service.user;
 
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
-import com.semicolon.gspass.dto.user.RegisterRequest;
+import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TokenResponse register(RegisterRequest request) {
+    public TokenResponse register(UserRegisterRequest request) {
         if(userRepository.existsById(request.getId())) throw new UserAlreadyExistException();
         userRepository.save(
                 User.builder()

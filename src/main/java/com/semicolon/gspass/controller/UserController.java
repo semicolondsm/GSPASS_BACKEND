@@ -2,7 +2,7 @@ package com.semicolon.gspass.controller;
 
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
-import com.semicolon.gspass.dto.user.RegisterRequest;
+import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "회원가입")
-    public TokenResponse register(@RequestBody RegisterRequest request) {
+    public TokenResponse register(@RequestBody UserRegisterRequest request) {
         return userService.register(request);
     }
 
