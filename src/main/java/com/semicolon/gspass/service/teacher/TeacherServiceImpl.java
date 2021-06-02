@@ -3,7 +3,10 @@ package com.semicolon.gspass.service.teacher;
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
+import com.semicolon.gspass.dto.teacher.GradeRequest;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
+import com.semicolon.gspass.entity.grade.Grade;
+import com.semicolon.gspass.entity.grade.GradeRepository;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.school.School;
@@ -30,6 +33,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final SchoolRepository schoolRepository;
+    private final GradeRepository gradeRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -78,6 +82,19 @@ public class TeacherServiceImpl implements TeacherService {
 
         teacherRepository.save(
                 teacher.setPassword(passwordEncoder.encode(request.getNewPassword()))
+        );
+    }
+
+    @Override
+    public void setTime(GradeRequest request) {
+        School school = schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
+                .orElseThrow(SchoolNotFoundException::new);
+        gradeRepository.save(
+                Grade.builder()
+                        .school(school)
+                        .id(request.getId())
+                        .breakfast(request.getBreakfast())
+                        .build()
         );
     }
 
