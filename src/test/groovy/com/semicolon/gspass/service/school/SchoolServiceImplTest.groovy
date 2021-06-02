@@ -1,6 +1,7 @@
 package com.semicolon.gspass.service.school
 
 import com.semicolon.gspass.dto.school.SchoolRegisterRequest
+import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
 import com.semicolon.gspass.exception.ParseErrorException
 import com.semicolon.gspass.exception.SchoolAlreadyExistException
@@ -9,7 +10,23 @@ import spock.lang.Specification
 
 class SchoolServiceImplTest extends Specification {
 
-    def "GetSchools"() {
+    def "급식 가져오기"() {
+        given:
+        def schoolRepository = Mock(SchoolRepository)
+        def authenticationFacade = Mock(AuthenticationFacade)
+        SchoolService schoolService = new SchoolServiceImpl(schoolRepository, authenticationFacade)
+
+        when:
+        schoolService.getMeals("20210602")
+
+        then:
+        schoolRepository.findById(1) >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null))
+        authenticationFacade.getSchoolId() >> 1
+        notThrown Exception
+
+    }
+
+    def "학교 검색"() {
         given:
         def schoolRepository = Mock(SchoolRepository)
         def authenticationFacade = Mock(AuthenticationFacade)
@@ -26,7 +43,7 @@ class SchoolServiceImplTest extends Specification {
         name << ["해강", "대덕", "부산"]
     }
 
-    def "registerSchool"() {
+    def "학교 등록하기"() {
         given:
         def schoolRepository = Mock(SchoolRepository)
         def authenticationFacade = Mock(AuthenticationFacade)
