@@ -1,6 +1,7 @@
 package com.semicolon.gspass.service.teacher
 
 import com.semicolon.gspass.dto.LoginRequest
+import com.semicolon.gspass.dto.PasswordRequest
 import com.semicolon.gspass.dto.teacher.RegisterRequest
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
@@ -62,7 +63,22 @@ class TeacherServiceImplTest extends Specification {
         "test1" | "test1"
     }
 
-    def "ChangePassword"() {
+    def "비밀번호 변경"() {
+        given:
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+                refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
+
+        when:
+        teacherService.changePassword(new PasswordRequest(oldPass, newPass))
+
+        then:
+        authenticationFacade.getTeacherId() >> 1.toString()
+        teacherRepository.findById("1") >> Optional.of(new Teacher("test", passwordEncoder.encode(oldPass), null))
+
+        where:
+        oldPass | newPass
+        "1234" | "12345"
+        "test" | "test1"
     }
 
 }
