@@ -20,7 +20,7 @@ class SchoolServiceImplTest extends Specification {
         schoolService.getMeals(0)
 
         then:
-        schoolRepository.findById(1) >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null))
+        schoolRepository.findById(1) >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null, null))
         authenticationFacade.getSchoolId() >> 1
         notThrown Exception
 

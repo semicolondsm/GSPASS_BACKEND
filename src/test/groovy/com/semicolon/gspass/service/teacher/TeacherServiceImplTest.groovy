@@ -3,6 +3,7 @@ package com.semicolon.gspass.service.teacher
 import com.semicolon.gspass.dto.LoginRequest
 import com.semicolon.gspass.dto.PasswordRequest
 import com.semicolon.gspass.dto.teacher.RegisterRequest
+import com.semicolon.gspass.entity.grade.GradeRepository
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
@@ -22,20 +23,21 @@ class TeacherServiceImplTest extends Specification {
     def teacherRepository = Mock(TeacherRepository)
     def schoolRepository = Mock(SchoolRepository)
     def refreshTokenRepository = Mock(RefreshTokenRepository)
+    def gradeRepository = Mock(GradeRepository)
     def passwordEncoder = new BCryptPasswordEncoder()
     def jwtTokenProvider = Mock(JwtTokenProvider)
     def authenticationFacade = Mock(AuthenticationFacade)
 
     def "RegisterTeacher"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
         teacherService.registerTeacher(new RegisterRequest(id, password, "testCode"))
 
         then:
-        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null))
+        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null, null))
 
         notThrown SchoolNotFoundException
 
@@ -48,7 +50,7 @@ class TeacherServiceImplTest extends Specification {
 
     def "없는 학교에 관리자 등록 SchoolNotFoundException예외"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -67,14 +69,14 @@ class TeacherServiceImplTest extends Specification {
 
     def "학교 관리자가 이미 존재함 TeacherAlreadyExist예외"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
         teacherService.registerTeacher(new RegisterRequest(id, password, "testCode"))
 
         then:
-        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null))
+        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null, null))
         teacherRepository.findById(id) >> Optional.of(new Teacher(id, password, null))
         teacherRepository.existsById(id) >> teacherRepository.findById(id).isPresent()
 
@@ -88,7 +90,7 @@ class TeacherServiceImplTest extends Specification {
 
     def "관리자 로그인"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -107,7 +109,7 @@ class TeacherServiceImplTest extends Specification {
 
     def "관리자 로그인 잘못된 비밀번호 InvalidPasswordException예외"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -126,7 +128,7 @@ class TeacherServiceImplTest extends Specification {
 
     def "비밀번호 변경"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -144,7 +146,7 @@ class TeacherServiceImplTest extends Specification {
 
     def "비밀번호 변경 잘못된 비밀번호 InvalidPasswordException예외"() {
         given:
-        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository,
+        TeacherService teacherService = new TeacherServiceImpl(teacherRepository, schoolRepository, gradeRepository,
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
