@@ -13,6 +13,7 @@ import com.semicolon.gspass.entity.user.UserRepository
 import com.semicolon.gspass.error.exception.GsException
 import com.semicolon.gspass.exception.InvalidTokenException
 import com.semicolon.gspass.exception.UserAlreadyExistException
+import com.semicolon.gspass.exception.UserNotFoundException
 import com.semicolon.gspass.facade.auth.AuthenticationFacade
 import com.semicolon.gspass.facade.school.SchoolFacade
 import com.semicolon.gspass.security.JwtTokenProvider
@@ -133,6 +134,8 @@ class UserServiceImplTest extends Specification {
         then:
         authenticationFacade.getUserId() >> 1.toString()
         userRepository.findById("1") >> Optional.of(new User("test", null, passwordEncoder.encode(oldPass), null, null, null))
+
+        notThrown UserNotFoundException
 
         where:
         oldPass | newPass
