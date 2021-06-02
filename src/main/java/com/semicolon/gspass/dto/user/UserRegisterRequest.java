@@ -1,4 +1,4 @@
-package com.semicolon.gspass.dto.school;
+package com.semicolon.gspass.dto.user;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -10,9 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class RegisterRequest {
+public class UserRegisterRequest {
 
-    private String schoolCode;
-    private String scCode;
+    private String id;
+    private String name;
+    private String password;
+    private String gcn;
+    private String entryYear;
+    private String randomCode;
 
 }

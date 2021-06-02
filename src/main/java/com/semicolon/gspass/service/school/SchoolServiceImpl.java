@@ -1,7 +1,7 @@
 package com.semicolon.gspass.service.school;
 
 import com.semicolon.gspass.dto.school.MealResponse;
-import com.semicolon.gspass.dto.school.RegisterRequest;
+import com.semicolon.gspass.dto.school.SchoolRegisterRequest;
 import com.semicolon.gspass.dto.school.SchoolResponse;
 import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.school.SchoolRepository;
@@ -125,7 +125,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public String registerSchool(RegisterRequest request) {
+    public String registerSchool(SchoolRegisterRequest request) {
         String randomCode = randomCode();
         try{
             schoolRepository.save(

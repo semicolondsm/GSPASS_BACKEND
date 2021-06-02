@@ -1,6 +1,6 @@
 package com.semicolon.gspass.service.school
 
-import com.semicolon.gspass.dto.school.RegisterRequest
+import com.semicolon.gspass.dto.school.SchoolRegisterRequest
 import com.semicolon.gspass.entity.school.SchoolRepository
 import com.semicolon.gspass.exception.ParseErrorException
 import com.semicolon.gspass.exception.SchoolAlreadyExistException
@@ -33,7 +33,7 @@ class SchoolServiceImplTest extends Specification {
         SchoolService schoolService = new SchoolServiceImpl(schoolRepository, authenticationFacade)
 
         when:
-        schoolService.registerSchool(new RegisterRequest(schoolCode, scCode))
+        schoolService.registerSchool(new SchoolRegisterRequest(schoolCode, scCode))
 
         then:
         notThrown SchoolAlreadyExistException

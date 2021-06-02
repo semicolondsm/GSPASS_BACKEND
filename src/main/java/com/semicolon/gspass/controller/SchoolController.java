@@ -1,7 +1,7 @@
 package com.semicolon.gspass.controller;
 
 import com.semicolon.gspass.dto.school.MealResponse;
-import com.semicolon.gspass.dto.school.RegisterRequest;
+import com.semicolon.gspass.dto.school.SchoolRegisterRequest;
 import com.semicolon.gspass.dto.school.SchoolResponse;
 import com.semicolon.gspass.service.school.SchoolService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +35,7 @@ public class SchoolController {
 
     @PostMapping("/school")
     @Operation(summary = "학교 등록")
-    public String registerSchool(@RequestBody RegisterRequest request) {
+    public String registerSchool(@RequestBody SchoolRegisterRequest request) {
         return schoolService.registerSchool(request);
     }
 
