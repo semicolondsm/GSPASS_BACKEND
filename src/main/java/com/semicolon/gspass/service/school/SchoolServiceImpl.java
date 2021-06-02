@@ -47,8 +47,6 @@ public class SchoolServiceImpl implements SchoolService {
         School school = schoolRepository.findById(authenticationFacade.getSchoolId()).orElseThrow(SchoolNotFoundException::new);
         Document doc;
 
-        System.out.println(date.toString().replace("-", ""));
-
         try{
             DocumentBuilderFactory dbFactoty = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactoty.newDocumentBuilder();
