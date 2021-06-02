@@ -3,6 +3,7 @@ package com.semicolon.gspass.controller;
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
+import com.semicolon.gspass.dto.teacher.GradeRequest;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
 import com.semicolon.gspass.service.teacher.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +36,12 @@ public class TeacherController {
     @Operation(summary = "관리자 비밀번호 변경", security = @SecurityRequirement(name = "Authorization"))
     public void changePassword(@RequestBody PasswordRequest request) {
         teacherService.changePassword(request);
+    }
+
+    @PostMapping("/time")
+    @Operation(summary = "학년 정보 수정", security = @SecurityRequirement(name = "Authorization"))
+    public void setTime(@RequestBody GradeRequest request) {
+        teacherService.setTime(request);
     }
 
 }
