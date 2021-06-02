@@ -27,7 +27,37 @@ class UserServiceImplTest extends Specification {
 
 
 
-    def "NameIsExist"() {
+    def "이름이 이미 있을때 true가 반환된다."() {
+        given:
+        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+
+        when:
+        def result = userService.nameIsExist(name)
+
+        then:
+        userRepository.findById(name) >> Optional.of(new User(name, null, null, null, null, null))
+        assert result
+
+        where:
+        name << ["test", "test1", "test2"]
+
+    }
+
+    def "이름이 없으면 false가 반환된다."() {
+        given:
+        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+
+        when:
+        def result = userService.nameIsExist(name)
+
+        then:
+        userRepository.findById(name) >> Optional.empty()
+        assert !result
+
+        where:
+        name << ["test", "test1", "test2"]
     }
 
     def "Register"() {
