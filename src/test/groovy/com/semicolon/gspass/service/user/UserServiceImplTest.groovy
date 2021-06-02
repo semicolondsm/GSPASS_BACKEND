@@ -1,23 +1,18 @@
 package com.semicolon.gspass.service.user
 
 import com.semicolon.gspass.dto.LoginRequest
-import com.semicolon.gspass.dto.user.RegisterRequest
+import com.semicolon.gspass.dto.user.UserRegisterRequest
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
 import com.semicolon.gspass.entity.user.User
 import com.semicolon.gspass.entity.user.UserRepository
 import com.semicolon.gspass.error.exception.GsException
-import com.semicolon.gspass.exception.InvalidPasswordException
 import com.semicolon.gspass.exception.UserAlreadyExistException
-import com.semicolon.gspass.exception.UserNotFoundException
 import com.semicolon.gspass.facade.auth.AuthenticationFacade
 import com.semicolon.gspass.facade.school.SchoolFacade
 import com.semicolon.gspass.security.JwtTokenProvider
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import spock.lang.Specification
 
 class UserServiceImplTest extends Specification {
@@ -49,7 +44,7 @@ class UserServiceImplTest extends Specification {
                         .timeLength(10)
                         .build()
         )
-        userService.register(new RegisterRequest(id, name, password, gcn, entryYear, randomCode))
+        userService.register(new UserRegisterRequest(id, name, password, gcn, entryYear, randomCode))
 
         then:
         userRepository.findById(id) >> Optional.empty()
