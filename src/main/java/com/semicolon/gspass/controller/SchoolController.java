@@ -23,8 +23,8 @@ public class SchoolController {
 
     @GetMapping("/meals")
     @Operation(summary = "급식", security = @SecurityRequirement(name = "Authorization"))
-    public MealResponse getMeals(@RequestParam("date") String date) {
-        return schoolService.getMeals(date);
+    public MealResponse getMeals(@RequestParam("day") int day) {
+        return schoolService.getMeals(day);
     }
 
     @GetMapping("/school")
