@@ -20,7 +20,7 @@ class SchoolServiceImplTest extends Specification {
         schoolService.getMeals(0)
 
         then:
-        schoolRepository.findById(1) >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null, null))
+        schoolRepository.findById(1) >> Optional.of(new School(1, "대덕소프트웨어마이스터고등학교", "7430310", "G10", null, null, null, null, 0, null, null, null))
         authenticationFacade.getSchoolId() >> 1
         notThrown Exception
 
@@ -50,7 +50,7 @@ class SchoolServiceImplTest extends Specification {
         SchoolService schoolService = new SchoolServiceImpl(schoolRepository, authenticationFacade)
 
         when:
-        schoolService.registerSchool(new SchoolRegisterRequest(schoolCode, scCode))
+        schoolService.registerSchool(new SchoolRegisterRequest(schoolCode, scCode, "대덕소프트웨어마이스터고등학교"))
 
         then:
         notThrown SchoolAlreadyExistException
