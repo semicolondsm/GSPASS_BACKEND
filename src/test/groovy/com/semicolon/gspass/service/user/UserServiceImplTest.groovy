@@ -34,7 +34,7 @@ class UserServiceImplTest extends Specification {
     def "이름이 이미 있을때 true가 반환된다."() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         def result = userService.nameIsExist(name)
@@ -51,7 +51,7 @@ class UserServiceImplTest extends Specification {
     def "이름이 없으면 false가 반환된다."() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         def result = userService.nameIsExist(name)
@@ -67,7 +67,7 @@ class UserServiceImplTest extends Specification {
     def "Register"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         schoolRepository.save(
@@ -78,7 +78,7 @@ class UserServiceImplTest extends Specification {
                         .timeLength(10)
                         .build()
         )
-        userService.register(new UserRegisterRequest(id, name, password, gcn, entryYear, randomCode))
+        userService.register(new UserRegisterRequest(id, password, gcn, entryYear, randomCode))
 
         then:
         userRepository.findById(id) >> Optional.empty()
@@ -86,14 +86,14 @@ class UserServiceImplTest extends Specification {
         notThrown UserAlreadyExistException
 
         where:
-        id     | name  | password  | gcn    | entryYear | randomCode
-        "test" | "테스터" | "1111111" | "0000" | "2020"    | "test"
+        id     | password  | gcn    | entryYear | randomCode
+        "test" | "1111111" | "0000" | "2020"    | "test"
     }
 
     def "회원가입 아이디 중복"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         schoolRepository.save(
@@ -121,7 +121,7 @@ class UserServiceImplTest extends Specification {
     def "로그인"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.login(new LoginRequest(id, password))
@@ -132,14 +132,14 @@ class UserServiceImplTest extends Specification {
         notThrown GsException
 
         where:
-        id | password
+        id     | password
         "test" | "1111111"
     }
-    
+
     def "로그인 틀린 비밀번호"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.login(new LoginRequest(id, "wrongPassword"))
@@ -150,14 +150,14 @@ class UserServiceImplTest extends Specification {
         thrown GsException
 
         where:
-        id | password
+        id     | password
         "test" | "1111111"
     }
 
     def "로그인 없는 유저"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.login(new LoginRequest("wrongId", password))
@@ -169,14 +169,14 @@ class UserServiceImplTest extends Specification {
         thrown UserNotFoundException
 
         where:
-        id | password
+        id     | password
         "test" | "1111111"
     }
 
     def "토큰 재발급"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
         when:
         jwtTokenProvider.isRefreshToken(token) >> true
         refreshTokenRepository.findByRefreshToken(token) >> Optional.of(new RefreshToken("test", token, 100))
@@ -192,7 +192,7 @@ class UserServiceImplTest extends Specification {
     def "비밀번호 변경"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.changePassword(new PasswordRequest(oldPass, newPass))
@@ -205,14 +205,14 @@ class UserServiceImplTest extends Specification {
 
         where:
         oldPass | newPass
-        "1234" | "12345"
-        "test" | "test1"
+        "1234"  | "12345"
+        "test"  | "test1"
     }
 
     def "비밀번호 변경 잘못된 비밀번호"() {
         given:
         UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
-                ,refreshTokenRepository , jwtTokenProvider, authenticationFacade)
+                , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.changePassword(new PasswordRequest(oldPass, "wrongPassword"))
@@ -225,8 +225,8 @@ class UserServiceImplTest extends Specification {
 
         where:
         oldPass | newPass
-        "1234" | "12345"
-        "test" | "test1"
+        "1234"  | "12345"
+        "test"  | "test1"
     }
 
 }
