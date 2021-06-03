@@ -4,6 +4,7 @@ import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.GradeRequest;
+import com.semicolon.gspass.dto.teacher.PassTimeRequest;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
 import com.semicolon.gspass.entity.grade.Grade;
 import com.semicolon.gspass.entity.grade.GradeRepository;
@@ -96,6 +97,13 @@ public class TeacherServiceImpl implements TeacherService {
                         .breakfast(request.getBreakfast())
                         .build()
         );
+    }
+
+    @Override
+    public void setPassTime(PassTimeRequest request) {
+        schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
+                .map(school -> schoolRepository.save(school.setTime(request)))
+                .orElseThrow(SchoolNotFoundException::new);
     }
 
     private TokenResponse generateToken(String id) {

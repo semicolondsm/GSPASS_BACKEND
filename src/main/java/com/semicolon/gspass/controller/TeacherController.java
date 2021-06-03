@@ -4,6 +4,7 @@ import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.GradeRequest;
+import com.semicolon.gspass.dto.teacher.PassTimeRequest;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
 import com.semicolon.gspass.service.teacher.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,10 +39,18 @@ public class TeacherController {
         teacherService.changePassword(request);
     }
 
-    @PostMapping("/time")
-    @Operation(summary = "학년 정보 수정", security = @SecurityRequirement(name = "Authorization"))
+    @PostMapping("/grade/time")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "학년별 급식 시간 설정", security = @SecurityRequirement(name = "Authorization"))
     public void setTime(@RequestBody GradeRequest request) {
         teacherService.setTime(request);
+    }
+
+    @PostMapping("/school/time")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "급식패스 신청시간 설정", security = @SecurityRequirement(name = "Authorization"), description = "급식패스 신청시간 설정")
+    public void setPassTime(@RequestBody PassTimeRequest request) {
+        teacherService.setPassTime(request);
     }
 
 }

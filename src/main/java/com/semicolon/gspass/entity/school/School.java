@@ -1,6 +1,7 @@
 package com.semicolon.gspass.entity.school;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.semicolon.gspass.dto.teacher.PassTimeRequest;
 import com.semicolon.gspass.entity.grade.Grade;
 import com.semicolon.gspass.entity.teacher.Teacher;
 import com.semicolon.gspass.entity.user.User;
@@ -52,5 +53,16 @@ public class School {
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<Grade> grades = new HashSet<>();
+
+    public School setTime(PassTimeRequest request) {
+        if(request.getBreakfastPeriod() != null) this.breakfastPeriod = request.getBreakfastPeriod();
+        else this.breakfastPeriod = null;
+        if(request.getLunchPeriod() != null) this.lunchPeriod = request.getLunchPeriod();
+        else this.lunchPeriod = null;
+        if(request.getDinnerPeriod() != null) this.dinnerPeriod = request.getDinnerPeriod();
+        else this.dinnerPeriod = null;
+        this.timeLength = request.getTimeLength();
+        return this;
+    }
 
 }
