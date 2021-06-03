@@ -40,7 +40,7 @@ class UserServiceImplTest extends Specification {
         def result = userService.nameIsExist(name)
 
         then:
-        userRepository.findById(name) >> Optional.of(new User(name, null, null, null, null, null))
+        userRepository.findById(name) >> Optional.of(new User(name, null, null, null, null))
         assert result
 
         where:
@@ -104,10 +104,10 @@ class UserServiceImplTest extends Specification {
                         .timeLength(10)
                         .build()
         )
-        userService.register(new UserRegisterRequest(id, name, password, gcn, entryYear, randomCode))
+        userService.register(new UserRegisterRequest(id, password, gcn, entryYear, randomCode))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, name, passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
         userRepository.existsById(id) >> userRepository.findById(id).isPresent()
 
         thrown UserAlreadyExistException
@@ -127,7 +127,7 @@ class UserServiceImplTest extends Specification {
         userService.login(new LoginRequest(id, password))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, "test", passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
 
         notThrown GsException
 
@@ -145,7 +145,7 @@ class UserServiceImplTest extends Specification {
         userService.login(new LoginRequest(id, "wrongPassword"))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, "test", passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
 
         thrown GsException
 
@@ -163,7 +163,7 @@ class UserServiceImplTest extends Specification {
         userService.login(new LoginRequest("wrongId", password))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, "test", passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
         userRepository.findById("wrongId") >> Optional.empty()
 
         thrown UserNotFoundException
@@ -199,7 +199,7 @@ class UserServiceImplTest extends Specification {
 
         then:
         authenticationFacade.getUserId() >> 1.toString()
-        userRepository.findById("1") >> Optional.of(new User("test", null, passwordEncoder.encode(oldPass), null, null, null))
+        userRepository.findById("1") >> Optional.of(new User("test", passwordEncoder.encode(oldPass), null, null, null))
 
         notThrown GsException
 
@@ -219,7 +219,7 @@ class UserServiceImplTest extends Specification {
 
         then:
         authenticationFacade.getUserId() >> 1.toString()
-        userRepository.findById("1") >> Optional.of(new User("test", null, passwordEncoder.encode(oldPass), null, null, null))
+        userRepository.findById("1") >> Optional.of(new User("test", passwordEncoder.encode(oldPass), null, null, null))
 
         notThrown InvalidPasswordException
 
