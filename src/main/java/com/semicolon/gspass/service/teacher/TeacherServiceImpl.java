@@ -3,7 +3,12 @@ package com.semicolon.gspass.service.teacher;
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
+import com.semicolon.gspass.dto.teacher.GradeRequest;
+import com.semicolon.gspass.dto.teacher.PassTimeRequest;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
+import com.semicolon.gspass.dto.teacher.SchoolInformationResponse;
+import com.semicolon.gspass.entity.grade.Grade;
+import com.semicolon.gspass.entity.grade.GradeRepository;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
 import com.semicolon.gspass.entity.school.School;
@@ -21,7 +26,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 
 @Service
@@ -30,6 +34,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final SchoolRepository schoolRepository;
+    private final GradeRepository gradeRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -81,12 +86,39 @@ public class TeacherServiceImpl implements TeacherService {
         );
     }
 
-    private TokenResponse generateToken(String name) {
-        String accessToken = jwtTokenProvider.generateAccessToken(name, "teacher");
-        String refreshToken = jwtTokenProvider.generateRefreshToken(name, "teacher");
+    @Override
+    public void setTime(GradeRequest request) {
+        School school = schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
+                .orElseThrow(SchoolNotFoundException::new);
+        gradeRepository.save(
+                Grade.builder()
+                        .school(school)
+                        .id(request.getId())
+                        .breakfast(request.getBreakfast())
+                        .build()
+        );
+    }
+
+    @Override
+    public void setPassTime(PassTimeRequest request) {
+        schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
+                .map(school -> schoolRepository.save(school.setTime(request)))
+                .orElseThrow(SchoolNotFoundException::new);
+    }
+
+    @Override
+    public SchoolInformationResponse getInfo() {
+        return schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
+                .map(school -> new SchoolInformationResponse(school.getRandomCode(), school.getSchoolName()))
+                .orElseThrow(SchoolNotFoundException::new);
+    }
+
+    private TokenResponse generateToken(String id) {
+        String accessToken = jwtTokenProvider.generateAccessToken(id, "teacher");
+        String refreshToken = jwtTokenProvider.generateRefreshToken(id, "teacher");
         refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .id(name)
+                        .id(id)
                         .refreshExp(refreshTokenExpiration)
                         .refreshToken(refreshToken)
                         .build()

@@ -1,4 +1,4 @@
-package com.semicolon.gspass.entity.user;
+package com.semicolon.gspass.entity.grade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -10,40 +10,35 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Time;
 import java.util.Set;
 
-@Builder
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "user")
-public class User {
+@IdClass(GradeId.class)
+@Entity(name = "grade")
+public class Grade implements Serializable {
 
     @Id
-    @Column(length = 45, unique = true)
-    private String id;
-
-    @Column(length = 255)
-    private String password;
-
-    @Column(length = 5)
-    private String gcn;
-
-    @Column(length = 4)
-    private String entryYear;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     @JsonBackReference
     private School school;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Id
+    private Integer id;
+
+    private Time breakfast;
+
+    private Time lunch;
+
+    private Time dinner;
+
+    @OneToMany(mappedBy = "grade", fetch = FetchType.LAZY)
     @JsonManagedReference
     private Set<GsPass> gsPass;
-
-    public User setPassword(String password) {
-        this.password = password;
-        return this;
-    }
 
 }
