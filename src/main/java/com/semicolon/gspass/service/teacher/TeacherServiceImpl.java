@@ -98,12 +98,12 @@ public class TeacherServiceImpl implements TeacherService {
         );
     }
 
-    private TokenResponse generateToken(String name) {
-        String accessToken = jwtTokenProvider.generateAccessToken(name, "teacher");
-        String refreshToken = jwtTokenProvider.generateRefreshToken(name, "teacher");
+    private TokenResponse generateToken(String id) {
+        String accessToken = jwtTokenProvider.generateAccessToken(id, "teacher");
+        String refreshToken = jwtTokenProvider.generateRefreshToken(id, "teacher");
         refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .id(name)
+                        .id(id)
                         .refreshExp(refreshTokenExpiration)
                         .refreshToken(refreshToken)
                         .build()
