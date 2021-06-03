@@ -1,6 +1,7 @@
-package com.semicolon.gspass.security;
+package com.semicolon.gspass.security.filter;
 
 import com.semicolon.gspass.exception.InvalidTokenException;
+import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class UserTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -22,11 +23,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = jwtTokenProvider.resolveToken(request);
-            if(token != null && jwtTokenProvider.validateToken(token)){
-                Authentication authentication;
-                if(jwtTokenProvider.isTeacherToken(token)){
-                    authentication = jwtTokenProvider.teacherAuthentication(token);
-                }else authentication = jwtTokenProvider.authentication(token);
+            if(token != null && jwtTokenProvider.validateUserToken(token)){
+                Authentication authentication = jwtTokenProvider.authentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (InvalidTokenException e) {
