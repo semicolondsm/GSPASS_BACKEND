@@ -48,4 +48,11 @@ public class UserController {
         userService.changePassword(request);
     }
 
+    @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "급식패스 신청", security = @SecurityRequirement(name = "Authorization"))
+    public void applyGsPass() {
+        userService.applyGsPass();
+    }
+
 }
