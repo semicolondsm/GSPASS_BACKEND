@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers(HttpMethod.POST, "/teacher/school/time").authenticated()
                 .antMatchers(HttpMethod.POST, "/teacher/password").authenticated()
                 .antMatchers(HttpMethod.POST, "/teacher/grade/time").authenticated()
+                .antMatchers(HttpMethod.GET, "/school/information").authenticated()
                 .and().apply(new TeacherJwtConfigure(jwtTokenProvider));
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/meals").authenticated()
