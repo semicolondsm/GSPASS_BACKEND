@@ -20,9 +20,6 @@ public class User {
     @Column(length = 45, unique = true)
     private String id;
 
-    @Column(length = 45)
-    private String name;
-
     @Column(length = 255)
     private String password;
 

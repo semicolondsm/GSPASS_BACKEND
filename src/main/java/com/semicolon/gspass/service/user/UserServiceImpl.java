@@ -47,13 +47,12 @@ public class UserServiceImpl implements UserService {
                 .id(request.getId())
                 .entryYear(request.getEntryYear())
                 .gcn(request.getGcn())
-                .name(request.getName())
                 .school(schoolFacade.findByRandomCode(request.getRandomCode()))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build()
         );
 
-        return generateToken(request.getName());
+        return generateToken(request.getId());
     }
 
     @Override
@@ -92,12 +91,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private TokenResponse generateToken(String name) {
-        String accessToken = jwtTokenProvider.generateAccessToken(name, "user");
-        String refreshToken = jwtTokenProvider.generateRefreshToken(name, "user");
+    private TokenResponse generateToken(String id) {
+        String accessToken = jwtTokenProvider.generateAccessToken(id, "user");
+        String refreshToken = jwtTokenProvider.generateRefreshToken(id, "user");
         refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .id(name)
+                        .id(id)
                         .refreshExp(refreshTokenExpiration)
                         .refreshToken(refreshToken)
                         .build()
