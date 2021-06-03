@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(400, "Invalid Password."),
 
     SCHOOL_NOT_FOUND(404, "School Not Found."),
+    GRADE_NOT_FOUND(404, "Grade Not Found."),
     SCHOOL_ALREADY_EXIST(400, "School Already Exist."),
     PARSE_ERROR(400, "Parse Error.");
 

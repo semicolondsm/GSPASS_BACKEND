@@ -11,4 +11,5 @@ public interface UserService {
     TokenResponse login(LoginRequest request);
     TokenResponse tokenRefresh(String token);
     void changePassword(PasswordRequest request);
+    void applyGsPass();
 }

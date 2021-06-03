@@ -7,7 +7,6 @@ import com.semicolon.gspass.entity.refreshtoken.RefreshToken
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
 import com.semicolon.gspass.entity.school.SchoolRepository
-import com.semicolon.gspass.entity.teacher.Teacher
 import com.semicolon.gspass.entity.user.User
 import com.semicolon.gspass.entity.user.UserRepository
 import com.semicolon.gspass.error.exception.GsException
@@ -16,7 +15,7 @@ import com.semicolon.gspass.exception.InvalidTokenException
 import com.semicolon.gspass.exception.UserAlreadyExistException
 import com.semicolon.gspass.exception.UserNotFoundException
 import com.semicolon.gspass.facade.auth.AuthenticationFacade
-import com.semicolon.gspass.facade.school.SchoolFacade
+import com.semicolon.gspass.facade.user.UserFacade
 import com.semicolon.gspass.security.JwtTokenProvider
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import spock.lang.Specification
@@ -26,21 +25,24 @@ class UserServiceImplTest extends Specification {
     def schoolRepository = Mock(SchoolRepository)
     def userRepository = Mock(UserRepository)
     def refreshTokenRepository = Mock(RefreshTokenRepository)
-    def schoolFacade = Mock(SchoolFacade)
+    def userFacade = Mock(UserFacade)
     def authenticationFacade = Mock(AuthenticationFacade)
     def passwordEncoder = new BCryptPasswordEncoder()
     JwtTokenProvider jwtTokenProvider = Mock(JwtTokenProvider)
 
     def "이름이 이미 있을때 true가 반환된다."() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         def result = userService.nameIsExist(name)
 
         then:
-        userRepository.findById(name) >> Optional.of(new User(name, null, null, null, null))
+        userRepository.findById(name) >> Optional.of(User.builder()
+                .id("test")
+                .build()
+        )
         assert result
 
         where:
@@ -50,7 +52,7 @@ class UserServiceImplTest extends Specification {
 
     def "이름이 없으면 false가 반환된다."() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -66,7 +68,7 @@ class UserServiceImplTest extends Specification {
 
     def "Register"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -92,7 +94,7 @@ class UserServiceImplTest extends Specification {
 
     def "회원가입 아이디 중복"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -107,7 +109,11 @@ class UserServiceImplTest extends Specification {
         userService.register(new UserRegisterRequest(id, password, gcn, entryYear, randomCode))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(User.builder()
+                .id("test")
+                .password(passwordEncoder.encode(password))
+                .build()
+        )
         userRepository.existsById(id) >> userRepository.findById(id).isPresent()
 
         thrown UserAlreadyExistException
@@ -120,14 +126,18 @@ class UserServiceImplTest extends Specification {
 
     def "로그인"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.login(new LoginRequest(id, password))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(User.builder()
+                .id("test")
+                .password(passwordEncoder.encode(password))
+                .build()
+        )
 
         notThrown GsException
 
@@ -138,14 +148,18 @@ class UserServiceImplTest extends Specification {
 
     def "로그인 틀린 비밀번호"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.login(new LoginRequest(id, "wrongPassword"))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(User.builder()
+                .id("test")
+                .password(passwordEncoder.encode(password))
+                .build()
+        )
 
         thrown GsException
 
@@ -156,14 +170,18 @@ class UserServiceImplTest extends Specification {
 
     def "로그인 없는 유저"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
         userService.login(new LoginRequest("wrongId", password))
 
         then:
-        userRepository.findById(id) >> Optional.of(new User(id, passwordEncoder.encode(password), null, null, null))
+        userRepository.findById(id) >> Optional.of(User.builder()
+                .id("test")
+                .password(passwordEncoder.encode(passwordEncoder.encode(password)))
+                .build()
+        )
         userRepository.findById("wrongId") >> Optional.empty()
 
         thrown UserNotFoundException
@@ -175,7 +193,7 @@ class UserServiceImplTest extends Specification {
 
     def "토큰 재발급"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
         when:
         jwtTokenProvider.isRefreshToken(token) >> true
@@ -191,7 +209,7 @@ class UserServiceImplTest extends Specification {
 
     def "비밀번호 변경"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -199,7 +217,11 @@ class UserServiceImplTest extends Specification {
 
         then:
         authenticationFacade.getUserId() >> 1.toString()
-        userRepository.findById("1") >> Optional.of(new User("test", passwordEncoder.encode(oldPass), null, null, null))
+        userRepository.findById("1") >> Optional.of(User.builder()
+                .id("test")
+                .password(passwordEncoder.encode(oldPass))
+                .build()
+        )
 
         notThrown GsException
 
@@ -211,7 +233,7 @@ class UserServiceImplTest extends Specification {
 
     def "비밀번호 변경 잘못된 비밀번호"() {
         given:
-        UserService userService = new UserServiceImpl(userRepository, schoolFacade, passwordEncoder
+        UserService userService = new UserServiceImpl(userRepository, userFacade, passwordEncoder
                 , refreshTokenRepository, jwtTokenProvider, authenticationFacade)
 
         when:
@@ -219,7 +241,11 @@ class UserServiceImplTest extends Specification {
 
         then:
         authenticationFacade.getUserId() >> 1.toString()
-        userRepository.findById("1") >> Optional.of(new User("test", passwordEncoder.encode(oldPass), null, null, null))
+        userRepository.findById("1") >> Optional.of(User.builder()
+                .id("test")
+                .password(passwordEncoder.encode(oldPass))
+                .build()
+        )
 
         notThrown InvalidPasswordException
 

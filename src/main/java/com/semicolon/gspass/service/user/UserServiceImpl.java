@@ -4,28 +4,30 @@ import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
+import com.semicolon.gspass.entity.grade.Grade;
+import com.semicolon.gspass.entity.gspass.GsPass;
 import com.semicolon.gspass.entity.refreshtoken.RefreshToken;
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository;
+import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.user.User;
 import com.semicolon.gspass.entity.user.UserRepository;
-import com.semicolon.gspass.exception.InvalidPasswordException;
-import com.semicolon.gspass.exception.UserAlreadyExistException;
-import com.semicolon.gspass.exception.InvalidTokenException;
-import com.semicolon.gspass.exception.UserNotFoundException;
+import com.semicolon.gspass.exception.*;
 import com.semicolon.gspass.facade.auth.AuthenticationFacade;
-import com.semicolon.gspass.facade.school.SchoolFacade;
+import com.semicolon.gspass.facade.user.UserFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final SchoolFacade schoolFacade;
+    private final UserFacade userFacade;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
                 .id(request.getId())
                 .entryYear(request.getEntryYear())
                 .gcn(request.getGcn())
-                .school(schoolFacade.findByRandomCode(request.getRandomCode()))
+                .school(userFacade.findByRandomCode(request.getRandomCode()))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build()
         );
@@ -89,6 +91,25 @@ public class UserServiceImpl implements UserService {
                 user.setPassword(passwordEncoder.encode(request.getNewPassword()))
         );
 
+    }
+
+    @Override
+    public void applyGsPass() {
+        User user = userRepository.findById(authenticationFacade.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        int gradeId = LocalDate.now().getYear() - Integer.parseInt(user.getEntryYear()) + 1;
+
+        School school = userFacade.findById(user.getSchool().getId());
+        Grade grade = userFacade.findByIdAndSchool(gradeId, school)
+                .orElseThrow(GradeNotFoundException::new);
+
+        userFacade.save(
+                GsPass.builder()
+                .user(user)
+                .grade(grade)
+                .build()
+        );
     }
 
     private TokenResponse generateToken(String id) {
