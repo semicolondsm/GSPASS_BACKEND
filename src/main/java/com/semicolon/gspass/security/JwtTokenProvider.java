@@ -69,10 +69,6 @@ public class JwtTokenProvider {
         return getTokenBody(token).get("type").equals("refresh");
     }
 
-    public boolean isTeacherToken(String token) {
-        return getTokenBody(token).get("role").equals("teacher");
-    }
-
     public String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader(header);
         if(bearer != null && bearer.startsWith(prefix)) {
@@ -81,10 +77,23 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateUserToken(String token) {
         try {
             return getTokenBody(token).getExpiration()
-                    .after(new Date());
+                    .after(new Date()) &&
+                    getTokenBody(token).getSubject()
+                            .equals("user");
+        }catch (Exception e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    public boolean validateTeacherToken(String token) {
+        try {
+            return getTokenBody(token).getExpiration()
+                    .after(new Date()) &&
+                    getTokenBody(token).getSubject()
+                            .equals("teacher");
         }catch (Exception e) {
             throw new InvalidTokenException();
         }
