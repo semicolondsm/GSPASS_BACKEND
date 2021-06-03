@@ -2,6 +2,7 @@ package com.semicolon.gspass.controller;
 
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
+import com.semicolon.gspass.dto.user.UserInformationResponse;
 import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.service.user.UserService;
@@ -53,6 +54,12 @@ public class UserController {
     @Operation(summary = "급식패스 신청", security = @SecurityRequirement(name = "Authorization"))
     public void applyGsPass() {
         userService.applyGsPass();
+    }
+
+    @GetMapping("/information")
+    @Operation(summary = "유저 정보", security = @SecurityRequirement(name = "Authorization"))
+    public UserInformationResponse getUserInfo() {
+        return userService.getUserInfo();
     }
 
 }

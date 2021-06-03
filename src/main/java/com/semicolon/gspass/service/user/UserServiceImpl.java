@@ -2,6 +2,7 @@ package com.semicolon.gspass.service.user;
 
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
+import com.semicolon.gspass.dto.user.UserInformationResponse;
 import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.entity.grade.Grade;
@@ -110,6 +111,13 @@ public class UserServiceImpl implements UserService {
                 .grade(grade)
                 .build()
         );
+    }
+
+    @Override
+    public UserInformationResponse getUserInfo() {
+        User user = userRepository.findById(authenticationFacade.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+        return new UserInformationResponse(user.getSchool().getSchoolName(), user.getGcn());
     }
 
     private TokenResponse generateToken(String id) {

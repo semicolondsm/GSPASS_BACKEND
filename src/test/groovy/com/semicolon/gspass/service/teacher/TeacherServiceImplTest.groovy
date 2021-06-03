@@ -37,7 +37,7 @@ class TeacherServiceImplTest extends Specification {
         teacherService.registerTeacher(new RegisterRequest(id, password, "testCode"))
 
         then:
-        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null, null))
+        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "대덕소프트웨어마이스터고등학교", "7430310", "G10", null, null, null, null, 0, null, null, null))
 
         notThrown SchoolNotFoundException
 
@@ -76,7 +76,7 @@ class TeacherServiceImplTest extends Specification {
         teacherService.registerTeacher(new RegisterRequest(id, password, "testCode"))
 
         then:
-        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "7430310", "G10", null, null, null, null, 0, null, null, null))
+        schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "대덕소프트웨어마이스터고등학교","7430310", "G10", null, null, null, null, 0, null, null, null))
         teacherRepository.findById(id) >> Optional.of(new Teacher(id, password, null))
         teacherRepository.existsById(id) >> teacherRepository.findById(id).isPresent()
 

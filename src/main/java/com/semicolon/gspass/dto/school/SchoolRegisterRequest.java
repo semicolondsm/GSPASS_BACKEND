@@ -14,5 +14,6 @@ public class SchoolRegisterRequest {
 
     private String schoolCode;
     private String scCode;
+    private String schoolName;
 
 }

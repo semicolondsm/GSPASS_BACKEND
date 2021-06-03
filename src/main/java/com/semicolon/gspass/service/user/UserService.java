@@ -2,6 +2,7 @@ package com.semicolon.gspass.service.user;
 
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
+import com.semicolon.gspass.dto.user.UserInformationResponse;
 import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 
@@ -12,4 +13,5 @@ public interface UserService {
     TokenResponse tokenRefresh(String token);
     void changePassword(PasswordRequest request);
     void applyGsPass();
+    UserInformationResponse getUserInfo();
 }

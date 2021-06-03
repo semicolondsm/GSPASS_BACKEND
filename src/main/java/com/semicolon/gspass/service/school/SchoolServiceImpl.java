@@ -136,6 +136,7 @@ public class SchoolServiceImpl implements SchoolService {
                             .schoolCode(request.getSchoolCode())
                             .scCode(request.getScCode())
                             .randomCode(randomCode)
+                            .schoolName(request.getSchoolName())
                             .build()
             );
         }catch(Exception e) {

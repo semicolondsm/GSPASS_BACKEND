@@ -25,6 +25,10 @@ public class School {
 
     @Column(length = 45, nullable = false)
     @NonNull
+    private String schoolName;
+
+    @Column(length = 45, nullable = false)
+    @NonNull
     private String schoolCode;
 
     @Column(length = 45, nullable = false)
