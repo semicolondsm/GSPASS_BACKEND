@@ -104,6 +104,7 @@ class UserServiceImplTest extends Specification {
                         .randomCode("test")
                         .scCode("G10")
                         .schoolCode("7430310")
+                        .schoolName("대덕소프트웨어마이스터고등학교")
                         .timeLength(10)
                         .build()
         )
