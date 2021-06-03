@@ -6,6 +6,7 @@ import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.GradeRequest;
 import com.semicolon.gspass.dto.teacher.PassTimeRequest;
 import com.semicolon.gspass.dto.teacher.RegisterRequest;
+import com.semicolon.gspass.dto.teacher.SchoolInformationResponse;
 
 public interface TeacherService {
     TokenResponse registerTeacher(RegisterRequest request);
@@ -13,4 +14,5 @@ public interface TeacherService {
     void changePassword(PasswordRequest request);
     void setTime(GradeRequest request);
     void setPassTime(PassTimeRequest request);
+    SchoolInformationResponse getInfo();
 }
