@@ -81,7 +81,7 @@ public class JwtTokenProvider {
         try {
             return getTokenBody(token).getExpiration()
                     .after(new Date()) &&
-                    getTokenBody(token).getSubject()
+                    getTokenBody(token).get("role")
                             .equals("user");
         }catch (Exception e) {
             throw new InvalidTokenException();
@@ -92,7 +92,7 @@ public class JwtTokenProvider {
         try {
             return getTokenBody(token).getExpiration()
                     .after(new Date()) &&
-                    getTokenBody(token).getSubject()
+                    getTokenBody(token).get("role")
                             .equals("teacher");
         }catch (Exception e) {
             throw new InvalidTokenException();
