@@ -34,4 +34,7 @@ public class GsPass {
     @JsonBackReference
     private Grade grade;
 
+    @Column(name = "is_used", columnDefinition = "TINYINT(1)")
+    private boolean used;
+
 }
