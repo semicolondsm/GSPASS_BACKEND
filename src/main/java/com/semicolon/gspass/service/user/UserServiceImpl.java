@@ -2,6 +2,7 @@ package com.semicolon.gspass.service.user;
 
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
+import com.semicolon.gspass.dto.user.GsPassResponse;
 import com.semicolon.gspass.dto.user.UserInformationResponse;
 import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
@@ -22,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +105,7 @@ public class UserServiceImpl implements UserService {
         int gradeId = LocalDate.now().getYear() - Integer.parseInt(user.getEntryYear()) + 1;
 
         School school = userFacade.findById(user.getSchool().getId());
+        // TODO: 2021-06-04 시간 제한 추가
         Grade grade = userFacade.findByIdAndSchool(gradeId, school)
                 .orElseThrow(GradeNotFoundException::new);
 
@@ -109,6 +113,7 @@ public class UserServiceImpl implements UserService {
                 GsPass.builder()
                 .user(user)
                 .grade(grade)
+                .used(false)
                 .build()
         );
     }
@@ -118,6 +123,27 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(authenticationFacade.getUserId())
                 .orElseThrow(UserNotFoundException::new);
         return new UserInformationResponse(user.getSchool().getSchoolName(), user.getGcn());
+    }
+
+    @Override
+    public GsPassResponse getPassInfo() {
+        User user = userRepository.findById(authenticationFacade.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+        int gradeId = LocalDate.now().getYear() - Integer.parseInt(user.getEntryYear()) + 1;
+
+        School school = userFacade.findById(user.getSchool().getId());
+        Grade grade = userFacade.findByIdAndSchool(gradeId, school)
+                .orElseThrow(GradeNotFoundException::new);
+        GsPass gsPass = userFacade.findByUser(user)
+                .orElseThrow(GsPassNotFoundException::new);
+        int count = userFacade.unUsedPassCount(grade, gsPass.getId());
+        if(grade.getDinner() != null && grade.getDinner().toLocalTime().isAfter(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * count));
+        }else if(grade.getLunch() != null && grade.getLunch().toLocalTime().isAfter(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * count));
+        }else if(grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isAfter(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * count));
+        }else throw new GsPassNotFoundException();
     }
 
     private TokenResponse generateToken(String id) {
