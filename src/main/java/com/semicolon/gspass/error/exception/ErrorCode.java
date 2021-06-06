@@ -18,6 +18,10 @@ public enum ErrorCode {
     INVALID_TOKEN(401, "Invalid Token."),
     INVALID_PASSWORD(400, "Invalid Password."),
 
+    GSPASS_ALREADY_APPLY(400, "GsPass Already Apply."),
+    GSPASS_NOT_FOUND(404, "GsPass Not Found."),
+    NOT_GSPASS_APPLY_TIME(400, "Not GsPass Apply TIme"),
+
     SCHOOL_NOT_FOUND(404, "School Not Found."),
     GRADE_NOT_FOUND(404, "Grade Not Found."),
     SCHOOL_ALREADY_EXIST(400, "School Already Exist."),

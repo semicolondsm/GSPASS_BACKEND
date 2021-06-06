@@ -6,6 +6,8 @@ import com.semicolon.gspass.entity.gspass.GsPass;
 import com.semicolon.gspass.entity.gspass.GsPassRepository;
 import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.school.SchoolRepository;
+import com.semicolon.gspass.entity.user.User;
+import com.semicolon.gspass.exception.GsPassAlreadyApplyException;
 import com.semicolon.gspass.exception.SchoolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public GsPass save(GsPass gsPass) {
+        if(gsPassRepository.findByUser(gsPass.getUser()).isPresent())
+            throw new GsPassAlreadyApplyException();
         return gsPassRepository.save(gsPass);
     }
 
@@ -41,4 +45,21 @@ public class UserFacadeImpl implements UserFacade {
     public Optional<Grade> findByIdAndSchool(int id, School school) {
         return gradeRepository.findByIdAndSchool(id, school);
     }
+
+    @Override
+    public int unUsedPassCount(Grade grade, int id) {
+        return gsPassRepository.countByGradeAndIdLessThanAndUsed(grade, id, false);
+    }
+
+    @Override
+    public int PassCount(Grade grade, int id) {
+        return gsPassRepository.countByGradeAndIdLessThan(grade, id);
+    }
+
+    @Override
+    public Optional<GsPass> findByUser(User user) {
+        return gsPassRepository.findByUser(user);
+    }
+
+
 }
