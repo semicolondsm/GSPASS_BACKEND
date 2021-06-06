@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface GsPassRepository extends CrudRepository<GsPass, Integer> {
     Optional<GsPass> findByUser(User user);
     int countByGradeAndIdLessThanAndUsed(Grade grade, int id, boolean isUsed);
+    int countByGradeAndIdLessThan(Grade grade, int id);
 }
