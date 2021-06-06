@@ -13,5 +13,6 @@ public interface UserFacade {
     GsPass save(GsPass gsPass);
     Optional<Grade> findByIdAndSchool(int id, School school);
     int unUsedPassCount(Grade grade, int id);
+    int PassCount(Grade grade, int id);
     Optional<GsPass> findByUser(User user);
 }
