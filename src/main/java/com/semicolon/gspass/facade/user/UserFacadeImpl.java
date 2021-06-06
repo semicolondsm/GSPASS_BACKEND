@@ -52,6 +52,11 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
+    public int PassCount(Grade grade, int id) {
+        return gsPassRepository.countByGradeAndIdLessThan(grade, id);
+    }
+
+    @Override
     public Optional<GsPass> findByUser(User user) {
         return gsPassRepository.findByUser(user);
     }
