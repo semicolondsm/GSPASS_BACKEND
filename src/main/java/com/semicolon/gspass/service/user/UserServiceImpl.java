@@ -105,7 +105,6 @@ public class UserServiceImpl implements UserService {
         int gradeId = LocalDate.now().getYear() - Integer.parseInt(user.getEntryYear()) + 1;
 
         School school = userFacade.findById(user.getSchool().getId());
-        // TODO: 2021-06-04 시간 제한 추가
 
         if (!(
                 (school.getBreakfastPeriod() != null &&
@@ -149,13 +148,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(GradeNotFoundException::new);
         GsPass gsPass = userFacade.findByUser(user)
                 .orElseThrow(GsPassNotFoundException::new);
+        if(gsPass.isUsed()) throw new GsPassNotFoundException();
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
-        if (grade.getDinner() != null && grade.getDinner().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * count));
-        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * count));
-        } else if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * count));
+        int allCount = userFacade.PassCount(grade, gsPass.getId());
+        if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isAfter(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
+        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isAfter(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
+        } else if (grade.getDinner() != null && grade.getDinner().toLocalTime().isAfter(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
         } else throw new GsPassNotFoundException();
     }
 
