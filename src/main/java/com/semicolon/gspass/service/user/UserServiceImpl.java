@@ -47,15 +47,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse register(UserRegisterRequest request) {
-        if(userRepository.existsById(request.getId())) throw new UserAlreadyExistException();
+        if (userRepository.existsById(request.getId())) throw new UserAlreadyExistException();
         userRepository.save(
                 User.builder()
-                .id(request.getId())
-                .entryYear(request.getEntryYear())
-                .gcn(request.getGcn())
-                .school(userFacade.findByRandomCode(request.getRandomCode()))
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build()
+                        .id(request.getId())
+                        .entryYear(request.getEntryYear())
+                        .gcn(request.getGcn())
+                        .school(userFacade.findByRandomCode(request.getRandomCode()))
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .build()
         );
 
         return generateToken(request.getId());
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(request.getId())
                 .orElseThrow(UserNotFoundException::new);
 
-        if(!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
             throw new InvalidPasswordException();
 
         return generateToken(request.getId());
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse tokenRefresh(String token) {
-        if(!jwtTokenProvider.isRefreshToken(token)) throw new InvalidTokenException();
+        if (!jwtTokenProvider.isRefreshToken(token)) throw new InvalidTokenException();
 
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
                 .map(rToken -> rToken.update(refreshTokenExpiration))
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         String userId = authenticationFacade.getUserId();
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword()))
             throw new InvalidPasswordException();
 
         userRepository.save(
@@ -106,15 +106,28 @@ public class UserServiceImpl implements UserService {
 
         School school = userFacade.findById(user.getSchool().getId());
         // TODO: 2021-06-04 시간 제한 추가
-        Grade grade = userFacade.findByIdAndSchool(gradeId, school)
-                .orElseThrow(GradeNotFoundException::new);
+
+        if (!(
+                (school.getBreakfastPeriod() != null &&
+                school.getBreakfastPeriod().toLocalTime().isBefore(LocalTime.now()) &&
+                school.getBreakfastPeriod().toLocalTime().plusMinutes(school.getTimeLength()).isAfter(LocalTime.now())) ||
+                (school.getLunchPeriod() != null &&
+                        school.getLunchPeriod().toLocalTime().isBefore(LocalTime.now()) &&
+                        school.getLunchPeriod().toLocalTime().plusMinutes(school.getTimeLength()).isAfter(LocalTime.now())) ||
+                (school.getDinnerPeriod() != null &&
+                        school.getDinnerPeriod().toLocalTime().isBefore(LocalTime.now()) &&
+                        school.getDinnerPeriod().toLocalTime().plusMinutes(school.getTimeLength()).isAfter(LocalTime.now()))
+                )) throw new NotGsPassApplyTimeException();
+
+            Grade grade = userFacade.findByIdAndSchool(gradeId, school)
+                    .orElseThrow(GradeNotFoundException::new);
 
         userFacade.save(
                 GsPass.builder()
-                .user(user)
-                .grade(grade)
-                .used(false)
-                .build()
+                        .user(user)
+                        .grade(grade)
+                        .used(false)
+                        .build()
         );
     }
 
@@ -137,13 +150,13 @@ public class UserServiceImpl implements UserService {
         GsPass gsPass = userFacade.findByUser(user)
                 .orElseThrow(GsPassNotFoundException::new);
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
-        if(grade.getDinner() != null && grade.getDinner().toLocalTime().isAfter(LocalTime.now())) {
+        if (grade.getDinner() != null && grade.getDinner().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * count));
-        }else if(grade.getLunch() != null && grade.getLunch().toLocalTime().isAfter(LocalTime.now())) {
+        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * count));
-        }else if(grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isAfter(LocalTime.now())) {
+        } else if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * count));
-        }else throw new GsPassNotFoundException();
+        } else throw new GsPassNotFoundException();
     }
 
     private TokenResponse generateToken(String id) {
