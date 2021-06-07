@@ -56,8 +56,8 @@ public class UserController {
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "급식패스 신청", security = @SecurityRequirement(name = "Authorization"))
-    public void applyGsPass() {
-        userService.applyGsPass();
+    public GsPassResponse applyGsPass() {
+        return userService.applyGsPass();
     }
 
     @GetMapping("/information")
