@@ -3,6 +3,7 @@ package com.semicolon.gspass.service.school;
 import com.semicolon.gspass.dto.school.MealResponse;
 import com.semicolon.gspass.dto.school.SchoolRegisterRequest;
 import com.semicolon.gspass.dto.school.SchoolResponse;
+import com.semicolon.gspass.dto.teacher.SchoolInformationResponse;
 import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.school.SchoolRepository;
 import com.semicolon.gspass.exception.ParseErrorException;
@@ -128,7 +129,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public String registerSchool(SchoolRegisterRequest request) {
+    public SchoolInformationResponse registerSchool(SchoolRegisterRequest request) {
         String randomCode = randomCode();
         try{
             schoolRepository.save(
@@ -143,7 +144,7 @@ public class SchoolServiceImpl implements SchoolService {
             throw new SchoolAlreadyExistException();
         }
 
-        return randomCode;
+        return new SchoolInformationResponse(randomCode, request.getSchoolName());
     }
 
     private String randomCode() {
