@@ -3,6 +3,7 @@ package com.semicolon.gspass.controller;
 import com.semicolon.gspass.dto.school.MealResponse;
 import com.semicolon.gspass.dto.school.SchoolRegisterRequest;
 import com.semicolon.gspass.dto.school.SchoolResponse;
+import com.semicolon.gspass.dto.teacher.SchoolInformationResponse;
 import com.semicolon.gspass.service.school.SchoolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -36,7 +37,7 @@ public class SchoolController {
 
     @PostMapping("/school")
     @Operation(summary = "학교 등록")
-    public String registerSchool(@Valid @RequestBody SchoolRegisterRequest request) {
+    public SchoolInformationResponse registerSchool(@Valid @RequestBody SchoolRegisterRequest request) {
         return schoolService.registerSchool(request);
     }
 
