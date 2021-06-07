@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void applyGsPass() {
+    public GsPassResponse applyGsPass() {
         User user = userRepository.findById(authenticationFacade.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -129,6 +129,8 @@ public class UserServiceImpl implements UserService {
                         .used(false)
                         .build()
         );
+
+        return getPassInfo();
     }
 
     @Override
@@ -152,12 +154,12 @@ public class UserServiceImpl implements UserService {
         if(gsPass.isUsed()) throw new GsPassNotFoundException();
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
         int allCount = userFacade.PassCount(grade, gsPass.getId());
-        if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isAfter(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isAfter(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (grade.getDinner() != null && grade.getDinner().toLocalTime().isAfter(LocalTime.now())) {
+        if (grade.getDinner() != null && grade.getDinner().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
+        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isBefore(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
+        } else if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isBefore(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
         } else throw new GsPassNotFoundException();
     }
 
