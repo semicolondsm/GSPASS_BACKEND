@@ -2,7 +2,7 @@ package com.semicolon.gspass.service.teacher
 
 import com.semicolon.gspass.dto.LoginRequest
 import com.semicolon.gspass.dto.PasswordRequest
-import com.semicolon.gspass.dto.teacher.RegisterRequest
+import com.semicolon.gspass.dto.teacher.TeacherRegisterRequest
 import com.semicolon.gspass.entity.grade.GradeRepository
 import com.semicolon.gspass.entity.refreshtoken.RefreshTokenRepository
 import com.semicolon.gspass.entity.school.School
@@ -34,7 +34,7 @@ class TeacherServiceImplTest extends Specification {
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
-        teacherService.registerTeacher(new RegisterRequest(id, password, "testCode"))
+        teacherService.registerTeacher(new TeacherRegisterRequest(id, password, "testCode"))
 
         then:
         schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "대덕소프트웨어마이스터고등학교", "7430310", "G10", null, null, null, null, 0, null, null, null))
@@ -54,7 +54,7 @@ class TeacherServiceImplTest extends Specification {
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
-        teacherService.registerTeacher(new RegisterRequest(id, password, "wrongCode"))
+        teacherService.registerTeacher(new TeacherRegisterRequest(id, password, "wrongCode"))
 
         then:
         schoolRepository.findByRandomCode("wrongCode") >> Optional.empty()
@@ -73,7 +73,7 @@ class TeacherServiceImplTest extends Specification {
                 refreshTokenRepository, passwordEncoder, jwtTokenProvider, authenticationFacade)
 
         when:
-        teacherService.registerTeacher(new RegisterRequest(id, password, "testCode"))
+        teacherService.registerTeacher(new TeacherRegisterRequest(id, password, "testCode"))
 
         then:
         schoolRepository.findByRandomCode("testCode") >> Optional.of(new School(1, "대덕소프트웨어마이스터고등학교","7430310", "G10", null, null, null, null, 0, null, null, null))

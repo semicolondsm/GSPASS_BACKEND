@@ -5,7 +5,7 @@ import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.GradeRequest;
 import com.semicolon.gspass.dto.teacher.PassTimeRequest;
-import com.semicolon.gspass.dto.teacher.RegisterRequest;
+import com.semicolon.gspass.dto.teacher.TeacherRegisterRequest;
 import com.semicolon.gspass.dto.teacher.SchoolInformationResponse;
 import com.semicolon.gspass.service.teacher.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class TeacherController {
 
     @PostMapping("/register")
     @Operation(summary = "관리자 회원가입")
-    public TokenResponse register(@Valid @RequestBody RegisterRequest request) {
+    public TokenResponse register(@Valid @RequestBody TeacherRegisterRequest request) {
         return teacherService.registerTeacher(request);
     }
 
