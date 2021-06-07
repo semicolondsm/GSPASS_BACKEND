@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/teacher")
@@ -23,27 +25,27 @@ public class TeacherController {
 
     @PostMapping("/register")
     @Operation(summary = "관리자 회원가입")
-    public TokenResponse register(@RequestBody RegisterRequest request) {
+    public TokenResponse register(@Valid @RequestBody RegisterRequest request) {
         return teacherService.registerTeacher(request);
     }
 
     @PostMapping("/login")
     @Operation(summary = "관리자 로그인")
-    public TokenResponse login(@RequestBody LoginRequest request) {
+    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         return teacherService.login(request);
     }
 
     @PostMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "관리자 비밀번호 변경", security = @SecurityRequirement(name = "Authorization"))
-    public void changePassword(@RequestBody PasswordRequest request) {
+    public void changePassword(@Valid @RequestBody PasswordRequest request) {
         teacherService.changePassword(request);
     }
 
     @PostMapping("/grade/time")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "학년별 급식 시간 설정", security = @SecurityRequirement(name = "Authorization"))
-    public void setTime(@RequestBody GradeRequest request) {
+    public void setTime(@Valid @RequestBody GradeRequest request) {
         teacherService.setTime(request);
     }
 
