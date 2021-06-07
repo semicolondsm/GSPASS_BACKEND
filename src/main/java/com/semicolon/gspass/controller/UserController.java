@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -28,13 +30,13 @@ public class UserController {
 
     @PostMapping("/register")
     @Operation(summary = "회원가입")
-    public TokenResponse register(@RequestBody UserRegisterRequest request) {
+    public TokenResponse register(@Valid @RequestBody UserRegisterRequest request) {
         return userService.register(request);
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public TokenResponse login(@RequestBody LoginRequest request) {
+    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         return userService.login(request);
     }
 
@@ -47,7 +49,7 @@ public class UserController {
     @PostMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "비밀번호 변경", security = @SecurityRequirement(name = "Authorization"))
-    public void changePassword(@RequestBody PasswordRequest request) {
+    public void changePassword(@Valid @RequestBody PasswordRequest request) {
         userService.changePassword(request);
     }
 
