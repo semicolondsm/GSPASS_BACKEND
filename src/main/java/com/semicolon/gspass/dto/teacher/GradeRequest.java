@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import java.sql.Time;
 
 @Getter
@@ -11,6 +12,7 @@ import java.sql.Time;
 @AllArgsConstructor
 public class GradeRequest {
 
+    @NotEmpty
     private int id;
     private Time breakfast; //아침 먹는 시간
     private Time lunch;

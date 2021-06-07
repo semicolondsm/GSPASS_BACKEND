@@ -5,7 +5,7 @@ import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.TokenResponse;
 import com.semicolon.gspass.dto.teacher.GradeRequest;
 import com.semicolon.gspass.dto.teacher.PassTimeRequest;
-import com.semicolon.gspass.dto.teacher.RegisterRequest;
+import com.semicolon.gspass.dto.teacher.TeacherRegisterRequest;
 import com.semicolon.gspass.dto.teacher.SchoolInformationResponse;
 import com.semicolon.gspass.entity.grade.Grade;
 import com.semicolon.gspass.entity.grade.GradeRepository;
@@ -44,7 +44,7 @@ public class TeacherServiceImpl implements TeacherService {
     private Long refreshTokenExpiration;
 
     @Override
-    public TokenResponse registerTeacher(RegisterRequest request) {
+    public TokenResponse registerTeacher(TeacherRegisterRequest request) {
         School school = schoolRepository.findByRandomCode(request.getRandomCode()).orElseThrow(SchoolNotFoundException::new);
 
         if (teacherRepository.existsById(request.getId()) || school.getTeacher() != null

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class SchoolController {
 
     @PostMapping("/school")
     @Operation(summary = "학교 등록")
-    public String registerSchool(@RequestBody SchoolRegisterRequest request) {
+    public String registerSchool(@Valid @RequestBody SchoolRegisterRequest request) {
         return schoolService.registerSchool(request);
     }
 
