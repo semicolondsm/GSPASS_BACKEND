@@ -3,6 +3,7 @@ package com.semicolon.gspass.service.user;
 import com.semicolon.gspass.dto.LoginRequest;
 import com.semicolon.gspass.dto.PasswordRequest;
 import com.semicolon.gspass.dto.user.GsPassResponse;
+import com.semicolon.gspass.dto.user.GsPassTimeResponse;
 import com.semicolon.gspass.dto.user.UserInformationResponse;
 import com.semicolon.gspass.dto.user.UserRegisterRequest;
 import com.semicolon.gspass.dto.TokenResponse;
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void applyGsPass() {
+    public GsPassResponse applyGsPass() {
         User user = userRepository.findById(authenticationFacade.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
@@ -128,6 +129,8 @@ public class UserServiceImpl implements UserService {
                         .used(false)
                         .build()
         );
+
+        return getPassInfo();
     }
 
     @Override
@@ -151,13 +154,30 @@ public class UserServiceImpl implements UserService {
         if(gsPass.isUsed()) throw new GsPassNotFoundException();
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
         int allCount = userFacade.PassCount(grade, gsPass.getId());
-        if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isAfter(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isAfter(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (grade.getDinner() != null && grade.getDinner().toLocalTime().isAfter(LocalTime.now())) {
+        if (grade.getDinner() != null && grade.getDinner().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
+        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isBefore(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
+        } else if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isBefore(LocalTime.now())) {
+            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
         } else throw new GsPassNotFoundException();
+    }
+
+    @Override
+    public GsPassTimeResponse getNextGsPassTime() {
+        User user = userRepository.findById(authenticationFacade.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        School school = userFacade.findById(user.getSchool().getId());
+
+        if(school.getBreakfastPeriod() != null && school.getBreakfastPeriod().toLocalTime().isAfter(LocalTime.now()))
+            return new GsPassTimeResponse(school.getBreakfastPeriod());
+        else if(school.getLunchPeriod() != null && school.getLunchPeriod().toLocalTime().isAfter(LocalTime.now()))
+            return new GsPassTimeResponse(school.getLunchPeriod());
+        else if(school.getDinnerPeriod() != null && school.getDinnerPeriod().toLocalTime().isAfter(LocalTime.now()))
+            return new GsPassTimeResponse(school.getDinnerPeriod());
+        else return null;
+
     }
 
     private TokenResponse generateToken(String id) {
