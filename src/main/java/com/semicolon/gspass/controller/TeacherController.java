@@ -63,7 +63,7 @@ public class TeacherController {
     }
 
     @PostMapping("/refresh")
-    @Operation(summary = "관리자 토큰 리프레시", security = @SecurityRequirement(name = "Authorization"))
+    @Operation(summary = "관리자 토큰 리프레시")
     public TokenResponse tokenRefresh(@RequestHeader(name = "X-Refresh-Token") String token) {
         return teacherService.tokenRefresh(token);
     }
