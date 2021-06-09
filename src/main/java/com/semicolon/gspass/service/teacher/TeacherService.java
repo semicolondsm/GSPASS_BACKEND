@@ -15,4 +15,5 @@ public interface TeacherService {
     void setTime(GradeRequest request);
     void setPassTime(PassTimeRequest request);
     SchoolInformationResponse getInfo();
+    TokenResponse tokenRefresh(String token);
 }
