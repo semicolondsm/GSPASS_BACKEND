@@ -15,10 +15,7 @@ import com.semicolon.gspass.entity.school.School;
 import com.semicolon.gspass.entity.school.SchoolRepository;
 import com.semicolon.gspass.entity.teacher.Teacher;
 import com.semicolon.gspass.entity.teacher.TeacherRepository;
-import com.semicolon.gspass.exception.InvalidPasswordException;
-import com.semicolon.gspass.exception.SchoolNotFoundException;
-import com.semicolon.gspass.exception.TeacherAlreadyExistException;
-import com.semicolon.gspass.exception.TeacherNotFoundException;
+import com.semicolon.gspass.exception.*;
 import com.semicolon.gspass.facade.auth.AuthenticationFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -111,6 +108,16 @@ public class TeacherServiceImpl implements TeacherService {
         return schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
                 .map(school -> new SchoolInformationResponse(school.getRandomCode(), school.getSchoolName()))
                 .orElseThrow(SchoolNotFoundException::new);
+    }
+
+    public TokenResponse tokenRefresh(String token) {
+        if (!jwtTokenProvider.isRefreshToken(token) || !jwtTokenProvider.validateTeacherToken(token)) throw new InvalidTokenException();
+
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
+                .map(rToken -> rToken.update(refreshTokenExpiration))
+                .orElseThrow(InvalidTokenException::new);
+
+        return new TokenResponse(jwtTokenProvider.generateAccessToken(refreshToken.getId(), "teacher"), refreshToken.getRefreshToken());
     }
 
     private TokenResponse generateToken(String id) {

@@ -203,7 +203,7 @@ class UserServiceImplTest extends Specification {
         userService.tokenRefresh(token)
 
         then:
-        notThrown InvalidTokenException
+        thrown InvalidTokenException
 
         where:
         token << ["refreshToken", "refreshToken1"]
