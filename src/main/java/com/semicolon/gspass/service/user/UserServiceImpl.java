@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TokenResponse tokenRefresh(String token) {
-        if (!jwtTokenProvider.isRefreshToken(token)) throw new InvalidTokenException();
+        if (!jwtTokenProvider.isRefreshToken(token) || !jwtTokenProvider.validateUserToken(token)) throw new InvalidTokenException();
 
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
                 .map(rToken -> rToken.update(refreshTokenExpiration))
