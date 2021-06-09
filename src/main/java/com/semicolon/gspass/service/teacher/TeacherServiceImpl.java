@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 
 
 @Service
@@ -87,11 +88,16 @@ public class TeacherServiceImpl implements TeacherService {
     public void setTime(GradeRequest request) {
         School school = schoolRepository.findById(authenticationFacade.getTeacher().getSchool().getId())
                 .orElseThrow(SchoolNotFoundException::new);
+        if(!request.getBreakfast().toLocalTime().equals(LocalTime.parse("00:00:00"))) request.setBreakfast(null);
+        if(!request.getLunch().toLocalTime().equals(LocalTime.parse("00:00:00"))) request.setLunch(null);
+        if(!request.getDinner().toLocalTime().equals(LocalTime.parse("00:00:00"))) request.setDinner(null);
         gradeRepository.save(
                 Grade.builder()
                         .school(school)
                         .id(request.getId())
                         .breakfast(request.getBreakfast())
+                        .lunch(request.getLunch())
+                        .dinner(request.getDinner())
                         .build()
         );
     }

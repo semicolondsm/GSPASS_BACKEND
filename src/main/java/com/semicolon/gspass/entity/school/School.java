@@ -9,6 +9,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,11 +60,14 @@ public class School {
     private Set<Grade> grades = new HashSet<>();
 
     public School setTime(PassTimeRequest request) {
-        if(request.getBreakfastPeriod() != null) this.breakfastPeriod = request.getBreakfastPeriod();
+        if(request.getBreakfastPeriod() != null &&
+                !request.getBreakfastPeriod().toLocalTime().equals(LocalTime.parse("00:00:00"))) this.breakfastPeriod = request.getBreakfastPeriod();
         else this.breakfastPeriod = null;
-        if(request.getLunchPeriod() != null) this.lunchPeriod = request.getLunchPeriod();
+        if(request.getLunchPeriod() != null &&
+                !request.getLunchPeriod().toLocalTime().equals(LocalTime.parse("00:00:00"))) this.lunchPeriod = request.getLunchPeriod();
         else this.lunchPeriod = null;
-        if(request.getDinnerPeriod() != null) this.dinnerPeriod = request.getDinnerPeriod();
+        if(request.getDinnerPeriod() != null &&
+                !request.getDinnerPeriod().toLocalTime().equals(LocalTime.parse("00:00:00"))) this.dinnerPeriod = request.getDinnerPeriod();
         else this.dinnerPeriod = null;
         this.timeLength = request.getTimeLength();
         return this;
