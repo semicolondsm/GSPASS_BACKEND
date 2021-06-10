@@ -78,4 +78,11 @@ public class UserController {
         return userService.getNextGsPassTime();
     }
 
+    @PostMapping("/gspass")
+    @Operation(summary = "급식패스 사용", security = @SecurityRequirement(name = "Authorization"))
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void useGsPass() {
+        userService.useGsPass();
+    }
+
 }

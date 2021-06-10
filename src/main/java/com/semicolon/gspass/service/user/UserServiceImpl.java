@@ -180,6 +180,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void useGsPass() {
+        User user = userRepository.findById(authenticationFacade.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        GsPass gsPass = userFacade.findByUser(user)
+                .orElseThrow(GsPassNotFoundException::new);
+
+        userFacade.save(gsPass.use());
+    }
+
     private TokenResponse generateToken(String id) {
         String accessToken = jwtTokenProvider.generateAccessToken(id, "user");
         String refreshToken = jwtTokenProvider.generateRefreshToken(id, "user");
