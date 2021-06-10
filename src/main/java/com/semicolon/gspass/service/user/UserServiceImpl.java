@@ -154,11 +154,11 @@ public class UserServiceImpl implements UserService {
         if(gsPass.isUsed()) throw new GsPassNotFoundException();
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
         int allCount = userFacade.PassCount(grade, gsPass.getId());
-        if (grade.getDinner() != null && grade.getDinner().toLocalTime().isBefore(LocalTime.now())) {
+        if (school.getDinnerPeriod() != null && school.getDinnerPeriod().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (grade.getLunch() != null && grade.getLunch().toLocalTime().isBefore(LocalTime.now())) {
+        } else if (school.getLunchPeriod() != null && school.getLunchPeriod().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (grade.getBreakfast() != null && grade.getBreakfast().toLocalTime().isBefore(LocalTime.now())) {
+        } else if (school.getBreakfastPeriod() != null && school.getBreakfastPeriod().toLocalTime().isBefore(LocalTime.now())) {
             return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
         } else throw new GsPassNotFoundException();
     }
