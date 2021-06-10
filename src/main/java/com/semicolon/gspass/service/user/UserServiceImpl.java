@@ -20,6 +20,7 @@ import com.semicolon.gspass.facade.user.UserFacade;
 import com.semicolon.gspass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -202,6 +203,11 @@ public class UserServiceImpl implements UserService {
                         .build()
         );
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+    @Scheduled(cron = "0 0 9,2,20 * * *", zone = "Asia/Seoul")
+    public void deleteGsPass() {
+        userFacade.deleteAll();
     }
 
 }
