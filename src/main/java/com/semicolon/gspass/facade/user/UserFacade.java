@@ -15,4 +15,5 @@ public interface UserFacade {
     int unUsedPassCount(Grade grade, int id);
     int PassCount(Grade grade, int id);
     Optional<GsPass> findByUser(User user);
+    void deleteAll();
 }

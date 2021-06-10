@@ -61,5 +61,10 @@ public class UserFacadeImpl implements UserFacade {
         return gsPassRepository.findByUser(user);
     }
 
+    @Override
+    public void deleteAll() {
+        gsPassRepository.deleteAll();
+    }
+
 
 }
