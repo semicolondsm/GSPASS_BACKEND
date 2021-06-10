@@ -18,4 +18,5 @@ public interface UserService {
     UserInformationResponse getUserInfo();
     GsPassResponse getPassInfo();
     GsPassTimeResponse getNextGsPassTime();
+    void useGsPass();
 }

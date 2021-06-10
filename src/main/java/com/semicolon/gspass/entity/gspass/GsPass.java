@@ -37,4 +37,9 @@ public class GsPass {
     @Column(name = "is_used", columnDefinition = "TINYINT(1)")
     private boolean used;
 
+    public GsPass use() {
+        used = !used;
+        return this;
+    }
+
 }
