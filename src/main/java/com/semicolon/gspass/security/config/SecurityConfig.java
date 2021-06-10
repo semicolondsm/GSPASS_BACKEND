@@ -36,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers(HttpMethod.POST, "/refresh").permitAll()
                 .antMatchers(HttpMethod.POST, "/school").permitAll()
                 .antMatchers(HttpMethod.GET, "/overlap").permitAll()
-                .antMatchers(HttpMethod.GET, "/school").permitAll();
+                .antMatchers(HttpMethod.GET, "/school").permitAll()
+                .antMatchers(HttpMethod.POST, "/teacher/refresh").permitAll();
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/teacher/school/time").authenticated()
                 .antMatchers(HttpMethod.POST, "/teacher/password").authenticated()
