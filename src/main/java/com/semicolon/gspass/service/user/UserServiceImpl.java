@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -155,12 +154,27 @@ public class UserServiceImpl implements UserService {
         if(gsPass.isUsed()) throw new GsPassNotFoundException();
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
         int allCount = userFacade.PassCount(grade, gsPass.getId());
-        if (school.getDinnerPeriod() != null && school.getDinnerPeriod().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (school.getLunchPeriod() != null && school.getLunchPeriod().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
-        } else if (school.getBreakfastPeriod() != null && school.getBreakfastPeriod().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
+        if (school.getDinnerPeriod() != null && grade.getDinner() != null &&
+                (school.getDinnerPeriod().toLocalTime().isBefore(LocalTime.now()) ||
+                        grade.getDinner().toLocalTime().plusHours(1).isAfter(LocalTime.now()))) {
+
+            Duration duration = Duration.between(LocalTime.now(), grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
+            return calculate(duration, count);
+
+        } else if (school.getLunchPeriod() != null && grade.getDinner() != null &&
+                school.getLunchPeriod().toLocalTime().isBefore(LocalTime.now()) ||
+                        grade.getLunch().toLocalTime().plusHours(1).isAfter(LocalTime.now())) {
+
+            Duration duration = Duration.between(LocalTime.now(), grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
+            return calculate(duration, count);
+
+        } else if (school.getBreakfastPeriod() != null && grade.getDinner() != null &&
+                school.getBreakfastPeriod().toLocalTime().isBefore(LocalTime.now()) ||
+                        grade.getBreakfast().toLocalTime().plusHours(1).isAfter(LocalTime.now())) {
+
+            Duration duration = Duration.between(LocalTime.now(), grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
+            return calculate(duration, count);
+
         } else throw new GsPassNotFoundException();
     }
 
@@ -189,7 +203,10 @@ public class UserServiceImpl implements UserService {
         GsPass gsPass = userFacade.findByUser(user)
                 .orElseThrow(GsPassNotFoundException::new);
 
-        userFacade.save(gsPass.use());
+        if(gsPass.isUsed())
+            throw new GsPassAlreadyUseException();
+
+        userFacade.useAndSave(gsPass);
     }
 
     private TokenResponse generateToken(String id) {
@@ -208,6 +225,13 @@ public class UserServiceImpl implements UserService {
     @Scheduled(cron = "0 0 9,2,20 * * *", zone = "Asia/Seoul")
     public void deleteGsPass() {
         userFacade.deleteAll();
+    }
+
+    private GsPassResponse calculate(Duration duration, int count) {
+        int hours = (int)duration.getSeconds() / 3600;
+        int minutes = (int)(duration.getSeconds() % 3600) / 60;
+        int seconds = (int)duration.getSeconds() % 60;
+        return new GsPassResponse(count, LocalTime.of(hours, minutes, seconds));
     }
 
 }
