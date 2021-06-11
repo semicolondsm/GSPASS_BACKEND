@@ -36,8 +36,6 @@ public class UserFacadeImpl implements UserFacade {
 
     @Override
     public GsPass save(GsPass gsPass) {
-        if(gsPassRepository.findByUser(gsPass.getUser()).isPresent())
-            throw new GsPassAlreadyApplyException();
         return gsPassRepository.save(gsPass);
     }
 

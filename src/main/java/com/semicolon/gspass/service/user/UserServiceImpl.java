@@ -24,6 +24,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -154,6 +155,7 @@ public class UserServiceImpl implements UserService {
         if(gsPass.isUsed()) throw new GsPassNotFoundException();
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
         int allCount = userFacade.PassCount(grade, gsPass.getId());
+      
         if (school.getDinnerPeriod() != null && grade.getDinner() != null &&
                 (school.getDinnerPeriod().toLocalTime().isBefore(LocalTime.now()) ||
                         grade.getDinner().toLocalTime().plusHours(1).isAfter(LocalTime.now()))) {
@@ -174,7 +176,7 @@ public class UserServiceImpl implements UserService {
 
             Duration duration = Duration.between(LocalTime.now(), grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
             return calculate(duration, count);
-
+          
         } else throw new GsPassNotFoundException();
     }
 
