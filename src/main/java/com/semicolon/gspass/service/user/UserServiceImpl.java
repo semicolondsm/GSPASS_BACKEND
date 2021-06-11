@@ -24,6 +24,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -156,11 +157,23 @@ public class UserServiceImpl implements UserService {
         int count = userFacade.unUsedPassCount(grade, gsPass.getId());
         int allCount = userFacade.PassCount(grade, gsPass.getId());
         if (school.getDinnerPeriod() != null && school.getDinnerPeriod().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
+            Duration duration = Duration.between(LocalTime.now(), grade.getDinner().toLocalTime().plusSeconds(5 * (allCount+1)));
+            int hours = (int)duration.getSeconds() / 3600;
+            int minutes = (int)(duration.getSeconds() % 3600) / 60;
+            int seconds = (int)duration.getSeconds() % 60;
+            return new GsPassResponse(count, LocalTime.of(hours, minutes, seconds));
         } else if (school.getLunchPeriod() != null && school.getLunchPeriod().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
+            Duration duration = Duration.between(LocalTime.now(), grade.getLunch().toLocalTime().plusSeconds(5 * (allCount+1)));
+            int hours = (int)duration.getSeconds() / 3600;
+            int minutes = (int)(duration.getSeconds() % 3600) / 60;
+            int seconds = (int)duration.getSeconds() % 60;
+            return new GsPassResponse(count, LocalTime.of(hours, minutes, seconds));
         } else if (school.getBreakfastPeriod() != null && school.getBreakfastPeriod().toLocalTime().isBefore(LocalTime.now())) {
-            return new GsPassResponse(count, grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
+            Duration duration = Duration.between(LocalTime.now(), grade.getBreakfast().toLocalTime().plusSeconds(5 * (allCount+1)));
+            int hours = (int)duration.getSeconds() / 3600;
+            int minutes = (int)(duration.getSeconds() % 3600) / 60;
+            int seconds = (int)duration.getSeconds() % 60;
+            return new GsPassResponse(count, LocalTime.of(hours, minutes, seconds));
         } else throw new GsPassNotFoundException();
     }
 
