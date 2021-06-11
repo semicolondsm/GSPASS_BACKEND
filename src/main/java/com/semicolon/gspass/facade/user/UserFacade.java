@@ -11,6 +11,7 @@ public interface UserFacade {
     School findByRandomCode(String randomCode);
     School findById(Integer id);
     GsPass save(GsPass gsPass);
+    void useAndSave(GsPass gsPass);
     Optional<Grade> findByIdAndSchool(int id, School school);
     int unUsedPassCount(Grade grade, int id);
     int PassCount(Grade grade, int id);

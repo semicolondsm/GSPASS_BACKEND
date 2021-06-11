@@ -20,7 +20,8 @@ public enum ErrorCode {
 
     GSPASS_ALREADY_APPLY(400, "GsPass Already Apply."),
     GSPASS_NOT_FOUND(404, "GsPass Not Found."),
-    NOT_GSPASS_APPLY_TIME(400, "Not GsPass Apply Time"),
+    NOT_GSPASS_APPLY_TIME(400, "Not GsPass Apply Time."),
+    GSPASS_ALREADY_USE(400, "GsPass Already Use."),
 
     SCHOOL_NOT_FOUND(404, "School Not Found."),
     GRADE_NOT_FOUND(404, "Grade Not Found."),
