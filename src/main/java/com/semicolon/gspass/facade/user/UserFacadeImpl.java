@@ -40,6 +40,11 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     @Override
+    public void useAndSave(GsPass gsPass) {
+        gsPassRepository.save(gsPass.use());
+    }
+
+    @Override
     public Optional<Grade> findByIdAndSchool(int id, School school) {
         return gradeRepository.findByIdAndSchool(id, school);
     }
